@@ -9,16 +9,16 @@ public class Film {
     private String name;
     private String description;
     private LocalDate releaseDate;
-    private Duration duration;
+    private int duration;
 
     public Film() {
 
     }
 
-    public Film(String name, String description, LocalDate releaseDate, Duration duration) {
+    public Film(String name, String description, String releaseDate, int duration) {
         this.name = name;
         this.description = description;
-        this.releaseDate = releaseDate;
+        this.releaseDate = LocalDate.parse(releaseDate);
         this.duration = duration;
     }
 
@@ -55,11 +55,11 @@ public class Film {
         this.releaseDate = releaseDate;
     }
 
-    public Duration getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(Duration duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 

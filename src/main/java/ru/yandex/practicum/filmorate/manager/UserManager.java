@@ -16,7 +16,7 @@ public class UserManager {
 
 
     public int setId() {
-        return idCount++;
+        return ++idCount;
     }
 
     public int getId() {
@@ -24,19 +24,16 @@ public class UserManager {
     }
 
     public User validation(User addedUser) throws ValidationException {
-        Optional<String> optEmail = Optional.of(addedUser.getEmail());
-        Optional<String> optLogin = Optional.of(addedUser.getLogin());
-        Optional<String> optName = Optional.of(addedUser.getName());
-        if (optName.isEmpty() || addedUser.getName().isEmpty()) {
+        if (addedUser.getName().isBlank()) {
             addedUser.setName(addedUser.getLogin());
         }
         if (addedUser.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Birthday: incorrect date format.");
         }
-        if (!addedUser.getEmail().contains("@") || addedUser.getEmail().isEmpty() || optEmail.isEmpty()) {
+        if (!addedUser.getEmail().contains("@") || addedUser.getEmail().isEmpty()) {
             throw new ValidationException("Email: incorrect date format.");
         }
-        if (addedUser.getLogin().contains(" ") || addedUser.getLogin().isEmpty() || optLogin.isEmpty()) {
+        if (addedUser.getLogin().contains(" ") || addedUser.getLogin().isEmpty()) {
             throw new ValidationException("Login: incorrect date format.");
         }
         return addedUser;

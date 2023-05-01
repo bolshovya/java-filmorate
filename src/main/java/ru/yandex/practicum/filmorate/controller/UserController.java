@@ -26,14 +26,12 @@ public class UserController {
 
     @PostMapping
     public User create(@RequestBody User user) throws ValidationException {
-        userManager.addUser(user);
-        return user;
+        return userManager.addUser(user);
     }
 
     @PutMapping
     public User update(@RequestBody User user) throws ManagerException {
-        userManager.updateUser(user);
-        return user;
+        return userManager.updateUser(user);
     }
 
 

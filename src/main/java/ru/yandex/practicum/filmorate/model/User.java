@@ -14,12 +14,13 @@ public class User {
 
     }
 
-    public User(String email, String login, String name, LocalDate birthday) {
+    public User(String login, String name, String email, String birthday) {
         this.email = email;
         this.login = login;
         this.name = name;
-        this.birthday = birthday;
+        this.birthday = LocalDate.parse(birthday);
     }
+
 
     public int getId() {
         return id;

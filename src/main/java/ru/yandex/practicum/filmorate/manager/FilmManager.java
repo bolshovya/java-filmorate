@@ -17,7 +17,7 @@ public class FilmManager {
 
 
     public int setId() {
-        return idCount++;
+        return ++idCount;
     }
 
     public int getId() {
@@ -35,7 +35,7 @@ public class FilmManager {
         if (addedFilm.getReleaseDate().isBefore(LocalDate.of(1895,12,28))) {
             throw new ValidationException("Release date not earlier than 28 December 1895.");
         }
-        if (addedFilm.getDuration().isNegative() || addedFilm.getDuration().isZero()) {
+        if (addedFilm.getDuration() <= 0 ) {
             throw new ValidationException("Duration can't be negative or zero.");
         }
         return addedFilm;
