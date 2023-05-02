@@ -34,7 +34,7 @@ public class FilmManager {
         if (addedFilm.getReleaseDate().isBefore(LocalDate.of(1895,12,28))) {
             throw new ValidationException("Release date not earlier than 28 December 1895.");
         }
-        if (addedFilm.getDuration() <= 0 ) {
+        if (addedFilm.getDuration() <= 0) {
             throw new ValidationException("Duration can't be negative or zero.");
         }
         return addedFilm;
