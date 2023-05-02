@@ -38,6 +38,13 @@ class UserControllerTest {
     }
 
     @Test
+    void shouldReturnExceptionYearTest() {
+        User user3 = new User("ivanivi", "Ivan", "ivan@ivanov.ru", "2095-05-05");
+        Exception exception = assertThrows(ValidationException.class, () -> userController.create(user3));
+        assertEquals("Birthday: incorrect date format.", exception.getMessage());
+    }
+
+    @Test
     void shouldReturnUserListTest() throws ValidationException {
         assertEquals(0, userController.findAll().size());
         userController.create(user1);
