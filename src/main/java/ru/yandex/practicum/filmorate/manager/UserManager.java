@@ -24,16 +24,13 @@ public class UserManager {
     }
 
     public User validation(User addedUser) throws ValidationException {
-        if (addedUser.getName().isBlank()) {
-            addedUser.setName(addedUser.getLogin());
-        }
         if (addedUser.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Birthday: incorrect date format.");
         }
-        if (!addedUser.getEmail().contains("@") || addedUser.getEmail().isEmpty()) {
+        if (!addedUser.getEmail().contains("@") || addedUser.getEmail().isBlank()) {
             throw new ValidationException("Email: incorrect date format.");
         }
-        if (addedUser.getLogin().contains(" ") || addedUser.getLogin().isEmpty()) {
+        if (addedUser.getLogin().isBlank()) {
             throw new ValidationException("Login: incorrect date format.");
         }
         return addedUser;

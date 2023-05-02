@@ -26,6 +26,10 @@ public class UserController {
 
     @PostMapping
     public User create(@RequestBody User user) throws ValidationException {
+        if (user.getName()==null) {
+            user.setName(user.getLogin());
+            log.warn("Добавляемый пользователь не содержит имени, вместо него подставлен логин.");
+        }
         return userManager.addUser(user);
     }
 
