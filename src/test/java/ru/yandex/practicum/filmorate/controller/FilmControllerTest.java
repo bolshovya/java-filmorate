@@ -45,8 +45,7 @@ class FilmControllerTest {
     void shouldReturnExceptionDescriptionMaxCharsTest() {  // максимальная длина описания — 200 символов;
         Film film = new Film("Ирония судьбы", "Советский двухсерийный телевизионный фильм режиссёра " +
                 "Эльдара Рязанова, созданный в 1975 году и впервые показанный в Советском Союзе 1 января 1976 года " +
-                "по «Первой программе ЦТ». Аудитория первого показа оценивается в 100 миллионов зрителей."
-                , "1975-01-01", 100);
+                "по «Первой программе ЦТ». Аудитория первого показа оценивается в 100 миллионов зрителей.", "1975-01-01", 100);
         Exception exception = assertThrows(ValidationException.class, () -> filmController.create(film));
         assertEquals("The description of the added film contains more than 200 chars.", exception.getMessage());
     }
