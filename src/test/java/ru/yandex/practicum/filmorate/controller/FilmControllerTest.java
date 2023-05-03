@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ManagerException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
@@ -23,20 +22,37 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldReturnFilm() throws ValidationException {
+    void shouldReturnFilm() {
         assertEquals(film1, filmController.create(film1));
         assertNotNull(filmController.findAll());
     }
 
     @Test
-    void shouldReturnException() throws ValidationException {
-        Film film = new Film("Ирония судьбы", "комедия из СССР", "1800-01-01", 0);
+    void shouldReturnException() { // дата релиза — не раньше 28 декабря 1895 года;
+        Film film = new Film("Ирония судьбы", "комедия из СССР", "1800-01-01", 184);
         Exception exception = assertThrows(ValidationException.class, () -> filmController.create(film));
         assertEquals("Release date not earlier than 28 December 1895.", exception.getMessage());
     }
 
     @Test
-    void shouldReturnFilmList() throws ValidationException {
+    void shouldReturnExceptionNameTest() {  // название не может быть пустым;
+        Film film = new Film("", "комедия из СССР", "1975-01-01", 184);
+        Exception exception = assertThrows(ValidationException.class, () -> filmController.create(film));
+        assertEquals("Added film doesn't contains name.", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnExceptionDescriptionMaxCharsTest() {  // максимальная длина описания — 200 символов;
+        Film film = new Film("Ирония судьбы", "Советский двухсерийный телевизионный фильм режиссёра " +
+                "Эльдара Рязанова, созданный в 1975 году и впервые показанный в Советском Союзе 1 января 1976 года " +
+                "по «Первой программе ЦТ». Аудитория первого показа оценивается в 100 миллионов зрителей."
+                , "1975-01-01", 100);
+        Exception exception = assertThrows(ValidationException.class, () -> filmController.create(film));
+        assertEquals("The description of the added film contains more than 200 chars.", exception.getMessage());
+    }
+
+    @Test
+    void shouldReturnFilmList() {
         assertEquals(0, filmController.findAll().size());
         filmController.create(film1);
         filmController.create(film2);
@@ -44,7 +60,7 @@ class FilmControllerTest {
     }
 
     @Test
-    void shouldUpdateFilm() throws ValidationException, ManagerException {
+    void shouldUpdateFilm() {
         filmController.create(film1);
         film1.setDescription("Гая Ричи комедия");
         filmController.update(film1);

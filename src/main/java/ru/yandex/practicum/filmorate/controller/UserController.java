@@ -2,15 +2,16 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exception.ManagerException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.manager.UserManager;
 import ru.yandex.practicum.filmorate.model.*;
 
 
+import javax.validation.Valid;
 import java.util.*;
 
+@Validated
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping
-    public User create(@RequestBody User user) throws ValidationException {
+    public User create(@Valid @RequestBody User user) {
         if (user.getName() == null) {
             user.setName(user.getLogin());
             log.warn("Добавляемый пользователь не содержит имени, вместо него подставлен логин.");
@@ -34,7 +35,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User update(@RequestBody User user) throws ManagerException {
+    public User update(@Valid @RequestBody User user) {
         return userManager.updateUser(user);
     }
 

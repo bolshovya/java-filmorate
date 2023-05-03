@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.exception;
 
-public class ManagerException extends Exception {
+public class ManagerException extends RuntimeException {
 
     public ManagerException() {
 

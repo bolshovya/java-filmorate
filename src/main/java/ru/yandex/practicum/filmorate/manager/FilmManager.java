@@ -20,10 +20,6 @@ public class FilmManager {
         return ++idCount;
     }
 
-    public int getId() {
-        return idCount;
-    }
-
     public Film validation(Film addedFilm) throws ValidationException {
         if (addedFilm.getName().isBlank()) {
             throw new ValidationException("Added film doesn't contains name.");

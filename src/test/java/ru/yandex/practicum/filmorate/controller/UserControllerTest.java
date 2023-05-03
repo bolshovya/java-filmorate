@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ManagerException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -24,7 +23,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldReturnUserTest() throws ValidationException {
+    void shouldReturnUserTest() {
         userController.create(user1);
         assertEquals(1, userController.findAll().size());
         assertEquals(user1, userController.findAll().get(0));
@@ -42,10 +41,21 @@ class UserControllerTest {
         User user3 = new User("ivanivi", "Ivan", "ivan@ivanov.ru", "2095-05-05");
         Exception exception = assertThrows(ValidationException.class, () -> userController.create(user3));
         assertEquals("Birthday: incorrect date format.", exception.getMessage());
+
     }
 
     @Test
-    void shouldReturnUserListTest() throws ValidationException {
+    void shouldReturnUserInsteadWithNameTest() {
+        User user3 = new User("ivanivi",null, "ivan@ivanov.ru", "1995-05-05");
+        userController.create(user3);
+        User user4 = new User("ivanivi","ivanivi", "ivan@ivanov.ru", "1995-05-05");
+        user4.setId(user3.getId());
+        assertEquals(user4, user3);
+        assertEquals("ivanivi", user3.getName());
+    }
+
+    @Test
+    void shouldReturnUserListTest() {
         assertEquals(0, userController.findAll().size());
         userController.create(user1);
         userController.create(user2);
@@ -53,7 +63,7 @@ class UserControllerTest {
     }
 
     @Test
-    void shouldUpdateUserTest() throws ValidationException, ManagerException {
+    void shouldUpdateUserTest() {
         userController.create(user1);
         user1.setName("Vyacheslav");
         userController.update(user1);

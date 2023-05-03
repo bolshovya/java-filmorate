@@ -19,10 +19,6 @@ public class UserManager {
         return ++idCount;
     }
 
-    public int getId() {
-        return idCount;
-    }
-
     public User validation(User addedUser) throws ValidationException {
         if (addedUser.getBirthday().isAfter(LocalDate.now())) {
             throw new ValidationException("Birthday: incorrect date format.");
