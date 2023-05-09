@@ -4,7 +4,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class Film {
 
@@ -20,6 +22,10 @@ public class Film {
     @Positive
     private int duration;
 
+    private int likeCount;
+
+    private Set<Integer> likers;
+
     public Film() {
 
     }
@@ -29,8 +35,36 @@ public class Film {
         this.description = description;
         this.releaseDate = LocalDate.parse(releaseDate);
         this.duration = duration;
+        this.likers = new LinkedHashSet<>();
     }
 
+    public void addLiker(User user) {
+        likers.add(user.getId());
+        ++likeCount;
+    }
+
+    public void addLiker(Integer userId) {
+        likers.add(userId);
+        ++likeCount;
+    }
+
+    public void removeLiker(User user) {
+        if (likers.contains(user.getId())) {
+            likeCount--;
+            likers.remove(user.getId());
+        }
+    }
+
+    public void removeLiker(Integer userId) {
+        if (likers.contains(userId)) {
+            likeCount--;
+            likers.remove(userId);
+        }
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
 
     public int getId() {
         return id;

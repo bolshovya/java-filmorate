@@ -1,7 +1,8 @@
-package ru.yandex.practicum.filmorate.manager;
+package ru.yandex.practicum.filmorate.storage.user;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.ManagerException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
@@ -9,8 +10,9 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.time.LocalDate;
 import java.util.*;
 
-public class UserManager {
-    private static final Logger log = LoggerFactory.getLogger(UserManager.class);
+@Component
+public class InMemoryUserStorage implements UserStorage {
+    private static final Logger log = LoggerFactory.getLogger(InMemoryUserStorage.class);
     private final Map<Integer, User> userStorage = new HashMap<>();
     private static int idCount;
 

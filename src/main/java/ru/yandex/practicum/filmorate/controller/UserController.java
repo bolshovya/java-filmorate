@@ -4,7 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.manager.UserManager;
+import ru.yandex.practicum.filmorate.storage.user.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import ru.yandex.practicum.filmorate.model.*;
 
 
@@ -17,7 +18,7 @@ import java.util.*;
 public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    private UserManager userManager = new UserManager();
+    private UserStorage userManager = new InMemoryUserStorage();
 
     @GetMapping
     public List<User> findAll() {

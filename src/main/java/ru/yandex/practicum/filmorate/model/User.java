@@ -4,7 +4,9 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class User {
     private int id;
@@ -20,6 +22,8 @@ public class User {
     @Past
     private LocalDate birthday;
 
+    private Set<Integer> friends;
+
     public User() {
 
     }
@@ -29,9 +33,28 @@ public class User {
         this.login = login;
         this.name = name;
         this.birthday = LocalDate.parse(birthday);
+        this.friends = new LinkedHashSet<>();
     }
 
+    public void addFriend(User user) {
+        friends.add(user.getId());
+    }
 
+    public void addFriend(Integer userId) {
+        friends.add(userId);
+    }
+
+    public void removeFriend(User user) {
+        friends.remove(user.getId());
+    }
+
+    public void removeFriend(Integer userId) {
+        friends.remove(userId);
+    }
+
+    public Set<Integer> getFriends() {
+        return friends;
+    }
 
     public int getId() {
         return id;
