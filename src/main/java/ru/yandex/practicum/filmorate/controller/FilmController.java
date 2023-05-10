@@ -1,39 +1,36 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmStorage;
+import ru.yandex.practicum.filmorate.service.FilmService;
 import ru.yandex.practicum.filmorate.model.*;
 
 import javax.validation.Valid;
 import java.util.*;
 
 @Validated
+@Slf4j
 @RestController
 @RequestMapping("/films")
 public class FilmController {
 
-    private static final Logger log = LoggerFactory.getLogger(FilmController.class);
-
-    private FilmStorage filmManager = new InMemoryFilmStorage();
+    private FilmService filmService = new FilmService();
 
     @GetMapping
     public List<Film> findAll() {
-        log.debug("Sum of films: " + filmManager.getSizeStorage());
-        return filmManager.getListOfAllFilms();
+        log.debug("Sum of films: " + filmService.getSizeStorage());
+        return filmService.getListOfAllFilms();
     }
 
     @PostMapping
     public Film create(@Valid @RequestBody Film film) {
-        return filmManager.addFilm(film);
+        return filmService.addFilm(film);
     }
 
     @PutMapping
     public Film update(@Valid @RequestBody Film film) {
-        return filmManager.updateFilm(film);
+        return filmService.updateFilm(film);
     }
 
 
