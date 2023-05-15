@@ -49,7 +49,7 @@ public class UsersController {
 
     @PostMapping
     public User create(@Valid @RequestBody User user) {
-        if (user.getName() == null | user.getName().equals("")) {
+        if (user.getName() == null || user.getName().equals("")) {
             user.setName(user.getLogin());
             log.warn("Добавляемый пользователь не содержит имени, вместо него подставлен логин.");
         }
