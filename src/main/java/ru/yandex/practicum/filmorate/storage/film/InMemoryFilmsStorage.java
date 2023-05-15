@@ -11,13 +11,13 @@ import java.util.*;
 
 @Slf4j
 @Component
-public class InMemoryFilmStorage implements FilmStorage {
-    private final Map<Integer, Film> filmStorage = new HashMap<>();
-    private static int idCount;
+public class InMemoryFilmsStorage implements FilmsStorage {
+    private final Map<Integer, Film> filmsStorage = new HashMap<>();
+    private static int FILMS_COUNT;
 
 
     public int setId() {
-        return ++idCount;
+        return ++FILMS_COUNT;
     }
 
     public Film validation(Film addedFilm) throws ValidationException {
@@ -39,39 +39,39 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Film addFilm(Film addedFilm) throws ValidationException {
         Film film = validation(addedFilm);
         film.setId(setId());
-        filmStorage.put(film.getId(), film);
+        filmsStorage.put(film.getId(), film);
         return film;
     }
 
     public Film updateFilm(Film updatedFilm) throws ManagerException {
         Optional<Integer> filmIdOpt = Optional.of(updatedFilm.getId());
-        if (filmIdOpt.isEmpty() || !filmStorage.containsKey(updatedFilm.getId())) {
+        if (filmIdOpt.isEmpty() || !filmsStorage.containsKey(updatedFilm.getId())) {
             throw new ManagerException("Added film not listed.");
         }
-        filmStorage.put(updatedFilm.getId(), updatedFilm);
+        filmsStorage.put(updatedFilm.getId(), updatedFilm);
         return updatedFilm;
     }
 
     public Film removeFilmFromStorage(Film removedFilm) {
-        filmStorage.remove(removedFilm.getId());
+        filmsStorage.remove(removedFilm.getId());
         return removedFilm;
     }
 
     public Film findById(int id) throws ManagerException {
-        if (!filmStorage.containsKey(id)) {
+        if (!filmsStorage.containsKey(id)) {
             log.error("ManagerException: film with this id not found");
             throw new ManagerException("Film with this id not found.");
         } else {
-            return filmStorage.get(id);
+            return filmsStorage.get(id);
         }
     }
 
     public List<Film> getListOfAllFilms() {
-        return new ArrayList<>(filmStorage.values());
+        return new ArrayList<>(filmsStorage.values());
     }
 
     public int getSizeStorage() {
-        return filmStorage.size();
+        return filmsStorage.size();
     }
 
 }

@@ -22,7 +22,7 @@ public class User {
     @Past
     private LocalDate birthday;
 
-    private Set<Integer> friends;
+    private Set<Integer> friends = new LinkedHashSet<>();
 
     public User() {
 
@@ -33,7 +33,7 @@ public class User {
         this.login = login;
         this.name = name;
         this.birthday = LocalDate.parse(birthday);
-        this.friends = new LinkedHashSet<>();
+        // this.friends = new LinkedHashSet<>();
     }
 
     public void addFriend(User user) {

@@ -11,13 +11,13 @@ import java.util.*;
 
 @Slf4j
 @Component
-public class InMemoryUserStorage implements UserStorage {
-    private final Map<Integer, User> userStorage = new HashMap<>();  // ket - id, value - User
-    private static int idCount;
+public class InMemoryUsersStorage implements UsersStorage {
+    private final Map<Integer, User> usersStorage = new HashMap<>();  // ket - id, value - User
+    private static int USERS_COUNT;
 
 
     public int setId() {
-        return ++idCount;
+        return ++USERS_COUNT;
     }
 
     public User validation(User addedUser) throws ValidationException {
@@ -36,39 +36,41 @@ public class InMemoryUserStorage implements UserStorage {
     public User addUser(User addedUser) throws ValidationException {
         User user = validation(addedUser);
         user.setId(setId());
-        userStorage.put(user.getId(), user);
+        usersStorage.put(user.getId(), user);
         return user;
     }
 
     public User updateUser(User updatedUser) throws ManagerException {
         Optional<Integer> optUserId = Optional.of(updatedUser.getId());
-        if (optUserId.isEmpty() || !userStorage.containsKey(updatedUser.getId())) {
-            throw new ManagerException("Added film not listed.");
+        if (optUserId.isEmpty() || !usersStorage.containsKey(updatedUser.getId())) {
+            throw new ManagerException("Added user not listed.");
         }
-        userStorage.put(updatedUser.getId(), updatedUser);
+        usersStorage.put(updatedUser.getId(), updatedUser);
         return updatedUser;
     }
 
     public User removeUserFromStorage(User removedUser) {
-        userStorage.remove(removedUser.getId());
+        usersStorage.remove(removedUser.getId());
         return removedUser;
     }
 
     public User findById(int id) throws ManagerException {
-        if (!userStorage.containsKey(id)) {
-            log.error("ManagerException: film with this id not found");
-            throw new ManagerException("Film with this id not found.");
+        if (!usersStorage.containsKey(id)) {
+            log.error("ManagerException: user with this id not found");
+            throw new ManagerException("User with this id not found.");
         } else {
-            return userStorage.get(id);
+            return usersStorage.get(id);
         }
     }
 
     public List<User> getListOfAllUsers() {
-        return new ArrayList<>(userStorage.values());
+        return new ArrayList<>(usersStorage.values());
     }
 
     public int getSizeStorage() {
-        return userStorage.size();
+        return usersStorage.size();
     }
+
+
 
 }

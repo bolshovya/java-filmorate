@@ -24,7 +24,7 @@ public class Film {
 
     private int likeCount;
 
-    private Set<Integer> likers;
+    private Set<Integer> likers = new LinkedHashSet<>();
 
     public Film() {
 
@@ -35,7 +35,7 @@ public class Film {
         this.description = description;
         this.releaseDate = LocalDate.parse(releaseDate);
         this.duration = duration;
-        this.likers = new LinkedHashSet<>();
+        // this.likers = new LinkedHashSet<>();
     }
 
     public void addLiker(User user) {
@@ -60,6 +60,10 @@ public class Film {
             likeCount--;
             likers.remove(userId);
         }
+    }
+
+    public Set<Integer> getLikers() {
+        return likers;
     }
 
     public int getLikeCount() {
