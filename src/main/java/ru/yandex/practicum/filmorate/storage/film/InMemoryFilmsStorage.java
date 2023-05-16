@@ -2,8 +2,8 @@ package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.ManagerException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationFilmsException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
@@ -20,33 +20,33 @@ public class InMemoryFilmsStorage implements FilmsStorage {
         return ++FILMS_COUNT;
     }
 
-    public Film validation(Film addedFilm) throws ValidationException {
+    public Film validation(Film addedFilm) {
         if (addedFilm.getName().isBlank()) {
-            throw new ValidationException("Added film doesn't contains name.");
+            throw new ValidationFilmsException("Added film doesn't contains name.");
         }
         if (addedFilm.getDescription().toCharArray().length > 200) {
-            throw new ValidationException("The description of the added film contains more than 200 chars.");
+            throw new ValidationFilmsException("The description of the added film contains more than 200 chars.");
         }
         if (addedFilm.getReleaseDate().isBefore(LocalDate.of(1895,12,28))) {
-            throw new ValidationException("Release date not earlier than 28 December 1895.");
+            throw new ValidationFilmsException("Release date not earlier than 28 December 1895.");
         }
         if (addedFilm.getDuration() <= 0) {
-            throw new ValidationException("Duration can't be negative or zero.");
+            throw new ValidationFilmsException("Duration can't be negative or zero.");
         }
         return addedFilm;
     }
 
-    public Film addFilm(Film addedFilm) throws ValidationException {
+    public Film addFilm(Film addedFilm) throws ValidationFilmsException {
         Film film = validation(addedFilm);
         film.setId(setId());
         filmsStorage.put(film.getId(), film);
         return film;
     }
 
-    public Film updateFilm(Film updatedFilm) throws ManagerException {
+    public Film updateFilm(Film updatedFilm) throws FilmNotFoundException {
         Optional<Integer> filmIdOpt = Optional.of(updatedFilm.getId());
         if (filmIdOpt.isEmpty() || !filmsStorage.containsKey(updatedFilm.getId())) {
-            throw new ManagerException("Added film not listed.");
+            throw new FilmNotFoundException();
         }
         filmsStorage.put(updatedFilm.getId(), updatedFilm);
         return updatedFilm;
@@ -57,10 +57,10 @@ public class InMemoryFilmsStorage implements FilmsStorage {
         return removedFilm;
     }
 
-    public Film findById(int id) throws ManagerException {
+    public Film findById(int id) throws FilmNotFoundException {
         if (!filmsStorage.containsKey(id)) {
-            log.error("ManagerException: film with this id not found");
-            throw new ManagerException("Film with this id not found.");
+            log.error("FilmNotFoundException: film with this id not found");
+            throw new FilmNotFoundException();
         } else {
             return filmsStorage.get(id);
         }

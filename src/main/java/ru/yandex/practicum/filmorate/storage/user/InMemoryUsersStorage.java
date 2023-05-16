@@ -2,8 +2,8 @@ package ru.yandex.practicum.filmorate.storage.user;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exception.ManagerException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationUsersException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.time.LocalDate;
@@ -20,30 +20,30 @@ public class InMemoryUsersStorage implements UsersStorage {
         return ++USERS_COUNT;
     }
 
-    public User validation(User addedUser) throws ValidationException {
+    public User validation(User addedUser) {
         if (addedUser.getBirthday().isAfter(LocalDate.now())) {
-            throw new ValidationException("Birthday: incorrect date format.");
+            throw new ValidationUsersException("Birthday: incorrect date format.");
         }
         if (!addedUser.getEmail().contains("@") || addedUser.getEmail().isBlank()) {
-            throw new ValidationException("Email: incorrect date format.");
+            throw new ValidationUsersException("Email: incorrect date format.");
         }
         if (addedUser.getLogin().isBlank()) {
-            throw new ValidationException("Login: incorrect date format.");
+            throw new ValidationUsersException("Login: incorrect date format.");
         }
         return addedUser;
     }
 
-    public User addUser(User addedUser) throws ValidationException {
+    public User addUser(User addedUser) throws ValidationUsersException {
         User user = validation(addedUser);
         user.setId(setId());
         usersStorage.put(user.getId(), user);
         return user;
     }
 
-    public User updateUser(User updatedUser) throws ManagerException {
+    public User updateUser(User updatedUser) throws UserNotFoundException {
         Optional<Integer> optUserId = Optional.of(updatedUser.getId());
         if (optUserId.isEmpty() || !usersStorage.containsKey(updatedUser.getId())) {
-            throw new ManagerException("Added user not listed.");
+            throw new UserNotFoundException();
         }
         usersStorage.put(updatedUser.getId(), updatedUser);
         return updatedUser;
@@ -54,10 +54,10 @@ public class InMemoryUsersStorage implements UsersStorage {
         return removedUser;
     }
 
-    public User findById(int id) throws ManagerException {
+    public User findById(int id) throws UserNotFoundException {
         if (!usersStorage.containsKey(id)) {
-            log.error("ManagerException: user with this id not found");
-            throw new ManagerException("User with this id not found.");
+            log.error("UserNotFoundException: user with this id not found");
+            throw new UserNotFoundException();
         } else {
             return usersStorage.get(id);
         }

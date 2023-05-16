@@ -46,16 +46,13 @@ public class FilmsService {
         return filmsStorage.updateFilm(searchedFilm);
     }
 
-    public List<Film> removeLiker(int filmId, int userId) {  // удаление лайка
+    public void removeLiker(int filmId, int userId) {  // удаление лайка
         if (filmId < 0 || userId < 0) {
             throw new ManagerException("Параметр id имеет отрицательное значение.");
         }
         Film searchedFilm = filmsStorage.findById(filmId);
         searchedFilm.removeLiker(userId);
         filmsStorage.updateFilm(searchedFilm);
-        return searchedFilm.getLikers().stream()
-                .map(x -> filmsStorage.findById(x))
-                .collect(Collectors.toList());
     }
 
     public Set<Film> findTopFilms(int count) {   // вывод 10 наиболее популярных фильмов по количеству лайков

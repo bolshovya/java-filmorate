@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationFilmsException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
@@ -30,14 +30,14 @@ class FilmsControllerTest {
     @Test
     void shouldReturnException() { // дата релиза — не раньше 28 декабря 1895 года;
         Film film = new Film("Ирония судьбы", "комедия из СССР", "1800-01-01", 184);
-        Exception exception = assertThrows(ValidationException.class, () -> filmsController.create(film));
+        Exception exception = assertThrows(ValidationFilmsException.class, () -> filmsController.create(film));
         assertEquals("Release date not earlier than 28 December 1895.", exception.getMessage());
     }
 
     @Test
     void shouldReturnExceptionNameTest() {  // название не может быть пустым;
         Film film = new Film("", "комедия из СССР", "1975-01-01", 184);
-        Exception exception = assertThrows(ValidationException.class, () -> filmsController.create(film));
+        Exception exception = assertThrows(ValidationFilmsException.class, () -> filmsController.create(film));
         assertEquals("Added film doesn't contains name.", exception.getMessage());
     }
 
@@ -46,7 +46,7 @@ class FilmsControllerTest {
         Film film = new Film("Ирония судьбы", "Советский двухсерийный телевизионный фильм режиссёра " +
                 "Эльдара Рязанова, созданный в 1975 году и впервые показанный в Советском Союзе 1 января 1976 года " +
                 "по «Первой программе ЦТ». Аудитория первого показа оценивается в 100 миллионов зрителей.", "1975-01-01", 100);
-        Exception exception = assertThrows(ValidationException.class, () -> filmsController.create(film));
+        Exception exception = assertThrows(ValidationFilmsException.class, () -> filmsController.create(film));
         assertEquals("The description of the added film contains more than 200 chars.", exception.getMessage());
     }
 

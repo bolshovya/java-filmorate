@@ -22,8 +22,6 @@ public class Film {
     @Positive
     private int duration;
 
-    private int likeCount;
-
     private Set<Integer> likers = new LinkedHashSet<>();
 
     public Film() {
@@ -40,24 +38,20 @@ public class Film {
 
     public void addLiker(User user) {
         likers.add(user.getId());
-        ++likeCount;
     }
 
     public void addLiker(Integer userId) {
         likers.add(userId);
-        ++likeCount;
     }
 
     public void removeLiker(User user) {
         if (likers.contains(user.getId())) {
-            likeCount--;
             likers.remove(user.getId());
         }
     }
 
     public void removeLiker(Integer userId) {
         if (likers.contains(userId)) {
-            likeCount--;
             likers.remove(userId);
         }
     }
@@ -67,7 +61,7 @@ public class Film {
     }
 
     public int getLikeCount() {
-        return likeCount;
+        return likers.size();
     }
 
     public int getId() {

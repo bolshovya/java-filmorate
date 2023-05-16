@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.ValidationUsersException;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
@@ -32,14 +32,14 @@ class UsersControllerTest {
     @Test
     void shouldReturnExceptionTest() {
         User user3 = new User("ivanivi", "Ivan", "ivanivanov.ru", "1995-05-05");
-        Exception exception = assertThrows(ValidationException.class, () -> usersController.create(user3));
+        Exception exception = assertThrows(ValidationUsersException.class, () -> usersController.create(user3));
         assertEquals("Email: incorrect date format.", exception.getMessage());
     }
 
     @Test
     void shouldReturnExceptionYearTest() {
         User user3 = new User("ivanivi", "Ivan", "ivan@ivanov.ru", "2095-05-05");
-        Exception exception = assertThrows(ValidationException.class, () -> usersController.create(user3));
+        Exception exception = assertThrows(ValidationUsersException.class, () -> usersController.create(user3));
         assertEquals("Birthday: incorrect date format.", exception.getMessage());
 
     }
