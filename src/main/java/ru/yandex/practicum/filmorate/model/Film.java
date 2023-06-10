@@ -24,6 +24,10 @@ public class Film {
 
     private Set<Integer> likers = new LinkedHashSet<>();
 
+    private Genre genre;
+
+    private Rating rating;
+
     public Film() {
 
     }

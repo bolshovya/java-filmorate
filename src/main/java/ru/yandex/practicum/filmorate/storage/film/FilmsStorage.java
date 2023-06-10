@@ -16,6 +16,4 @@ public interface FilmsStorage {
 
     public List<Film> getListOfAllFilms();
 
-    public int getSizeStorage();
-
 }

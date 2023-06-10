@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.service.FilmsService;
@@ -15,11 +16,17 @@ import java.util.*;
 @RequestMapping("/films")
 public class FilmsController {
 
-    private final FilmsService filmsService = new FilmsService();
+    private final FilmsService filmsService;
+
+    @Autowired
+    public FilmsController(FilmsService filmsService) {
+        this.filmsService = filmsService;
+    }
+
 
     @GetMapping
     public List<Film> findAll() {
-        log.info("GET-запрос списка всех фильмов: {}", filmsService.getSizeStorage());
+        // log.info("GET-запрос списка всех фильмов: {}", filmsService.getSizeStorage());
         return filmsService.getListOfAllFilms();
     }
 

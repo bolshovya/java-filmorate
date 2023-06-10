@@ -14,8 +14,6 @@ public interface UsersStorage {
 
     public List<User> getListOfAllUsers();
 
-    public int getSizeStorage();
-
     public User findById(int id);
 
 }

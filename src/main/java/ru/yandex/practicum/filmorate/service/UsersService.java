@@ -3,8 +3,9 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.InMemoryUsersStorage;
+import ru.yandex.practicum.filmorate.storage.user.impl.InMemoryUsersStorage;
 import ru.yandex.practicum.filmorate.storage.user.UsersStorage;
+import ru.yandex.practicum.filmorate.storage.user.impl.UsersDbStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,8 +16,8 @@ public class UsersService {
     private UsersStorage usersStorage;
 
     @Autowired
-    public UsersService() {
-        this.usersStorage = new InMemoryUsersStorage();
+    public UsersService(UsersDbStorage usersDbStorage) {
+        this.usersStorage = usersDbStorage;
     }
 
     public List<User> getListOfAllUsers() {
@@ -27,9 +28,12 @@ public class UsersService {
         return usersStorage.findById(id);
     }
 
+    /*
     public int getSizeStorage() {
         return usersStorage.getSizeStorage();
     }
+
+     */
 
     public User addUser(User addedUser) {
         return usersStorage.addUser(addedUser);

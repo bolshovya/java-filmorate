@@ -5,7 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exception.ManagerException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.*;
-import ru.yandex.practicum.filmorate.storage.film.InMemoryFilmsStorage;
+import ru.yandex.practicum.filmorate.storage.film.impl.FilmsDbStorage;
+import ru.yandex.practicum.filmorate.storage.film.impl.InMemoryFilmsStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,17 +17,20 @@ public class FilmsService {
     private FilmsStorage filmsStorage;
 
     @Autowired
-    public FilmsService() {
-        this.filmsStorage = new InMemoryFilmsStorage();
+    public FilmsService(FilmsDbStorage filmsDbStorage) {
+        this.filmsStorage = filmsDbStorage;
     }
 
     public List<Film> getListOfAllFilms() {
         return filmsStorage.getListOfAllFilms();
     }
 
+    /*
     public int getSizeStorage() {
         return filmsStorage.getSizeStorage();
     }
+
+     */
 
     public Film addFilm(Film addedFilm) {
         return filmsStorage.addFilm(addedFilm);

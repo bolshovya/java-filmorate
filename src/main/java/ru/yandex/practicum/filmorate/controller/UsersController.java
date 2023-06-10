@@ -19,13 +19,14 @@ public class UsersController {
     private final UsersService usersService;
 
     @Autowired
-    public UsersController() {
-        this.usersService = new UsersService();
+    public UsersController(UsersService usersService) {
+        this.usersService = usersService;
     }
+
 
     @GetMapping
     public List<User> findAll() {
-        log.info("GET-запрос списка всех пользователей: {}", usersService.getSizeStorage());
+        // log.info("GET-запрос списка всех пользователей: {}", usersService.getSizeStorage());
         return usersService.getListOfAllUsers();
     }
 
