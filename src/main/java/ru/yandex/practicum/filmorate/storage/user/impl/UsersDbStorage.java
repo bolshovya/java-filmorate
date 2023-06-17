@@ -10,8 +10,8 @@ import ru.yandex.practicum.filmorate.storage.user.UsersStorage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class UsersDbStorage implements UsersStorage {
@@ -27,7 +27,7 @@ public class UsersDbStorage implements UsersStorage {
 
     @Override
     public User addUser(User addedUser) {
-        jdbcTemplate.update("INSERT INTO users (email, login, name, birthday) VALUES(?, ?, ?, ?)",
+        jdbcTemplate.update("INSERT INTO users (id, email, login, name, birthday) VALUES(?, ?, ?, ?)",
                 addedUser.getEmail(),
                 addedUser.getLogin(),
                 addedUser.getName(),
@@ -61,8 +61,7 @@ public class UsersDbStorage implements UsersStorage {
     @Override
     public User findById(int id) throws UserNotFoundException {
 
-        // return jdbcTemplate.query("SELECT * FROM users WHERE id=?", new Object[]{id}, new BeanPropertyRowMapper<>(User.class).stream().findAny().orElse(null);
-
+        /*
         Optional<User> optUser = jdbcTemplate.query("SELECT * FROM users WHERE id=?",
                 new Object[]{id}, new UserMapper())
                 .stream().findAny();
@@ -79,6 +78,9 @@ public class UsersDbStorage implements UsersStorage {
         return updatedUser;
 
          */
+
+         return jdbcTemplate.query("SELECT * FROM users WHERE id=?", new Object[]{id}, new UserMapper())
+                 .stream().findAny().orElse(null);
     }
 
     public int getSizeStorage() {
@@ -98,5 +100,15 @@ public class UsersDbStorage implements UsersStorage {
 
             return user;
         }
+    }
+
+    private User mapUser(ResultSet resultSet) throws SQLException {
+        Integer id = resultSet.getInt("id");
+        String email = resultSet.getString("email");
+        String login = resultSet.getString("login");
+        String name = resultSet.getString("name");
+        LocalDate birthday = resultSet.getDate("birthday").toLocalDate();
+
+        return new User(email, login, name, birthday);
     }
 }
