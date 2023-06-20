@@ -1,11 +1,11 @@
-package ru.yandex.practicum.filmorate.storage.film.impl;
+package ru.yandex.practicum.filmorate.storage.memory;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationFilmsException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.film.FilmsStorage;
+import ru.yandex.practicum.filmorate.storage.FilmsStorage;
 
 import java.time.LocalDate;
 import java.util.*;

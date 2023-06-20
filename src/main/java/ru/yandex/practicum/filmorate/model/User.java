@@ -1,7 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import net.bytebuddy.asm.Advice;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
@@ -27,7 +25,6 @@ public class User {
     private Set<Integer> friends = new LinkedHashSet<>();
 
     public User() {
-
     }
 
     /*

@@ -3,9 +3,8 @@ package ru.yandex.practicum.filmorate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.user.impl.InMemoryUsersStorage;
-import ru.yandex.practicum.filmorate.storage.user.UsersStorage;
-import ru.yandex.practicum.filmorate.storage.user.impl.UsersDbStorage;
+import ru.yandex.practicum.filmorate.storage.UsersStorage;
+import ru.yandex.practicum.filmorate.storage.dao.UsersDbStorage;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,27 +19,24 @@ public class UsersService {
         this.usersStorage = usersDbStorage;
     }
 
-    public List<User> getListOfAllUsers() {
-        return usersStorage.getListOfAllUsers();
+    public User addUser(User addedUser) {
+        return usersStorage.addUser(addedUser);
     }
 
     public User findById(int id) {
         return usersStorage.findById(id);
     }
 
-    /*
-    public int getSizeStorage() {
-        return usersStorage.getSizeStorage();
-    }
-
-     */
-
-    public User addUser(User addedUser) {
-        return usersStorage.addUser(addedUser);
+    public List<User> getListOfAllUsers() {
+        return usersStorage.getListOfAllUsers();
     }
 
     public User updateUser(User updatedUser) {
         return usersStorage.updateUser(updatedUser);
+    }
+
+    public int getSizeStorage() {
+        return usersStorage.getSizeStorage();
     }
 
     public List<User> getFriendListById(int userId) {

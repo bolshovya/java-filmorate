@@ -22,50 +22,64 @@ public class Film {
     @Positive
     private int duration;
 
-    private Set<Integer> likers = new LinkedHashSet<>();
+    // private Set<Integer> likes = new LinkedHashSet<>();
+
+    private Set<Integer> likes;
 
     private Genre genre;
 
     private Rating rating;
 
     public Film() {
-
     }
+
+    /*
+    public Film(String name, String description, String releaseDate, int duration) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = LocalDate.parse(releaseDate);
+        this.duration = duration;
+        // this.likes = new LinkedHashSet<>();
+    }
+
+     */
 
     public Film(String name, String description, String releaseDate, int duration) {
         this.name = name;
         this.description = description;
         this.releaseDate = LocalDate.parse(releaseDate);
         this.duration = duration;
-        // this.likers = new LinkedHashSet<>();
+        this.likes = new LinkedHashSet<>();
+        this.genre = new Genre();
+        this.rating = new Rating();
     }
 
-    public void addLiker(User user) {
-        likers.add(user.getId());
+    public void addLike(User user) {
+        likes.add(user.getId());
     }
 
-    public void addLiker(Integer userId) {
-        likers.add(userId);
+    public void addLike(Integer userId) {
+        likes.add(userId);
     }
 
-    public void removeLiker(User user) {
-        if (likers.contains(user.getId())) {
-            likers.remove(user.getId());
+    public void removeLike(User user) {
+        if (likes.contains(user.getId())) {
+            likes.remove(user.getId());
         }
     }
 
-    public void removeLiker(Integer userId) {
-        if (likers.contains(userId)) {
-            likers.remove(userId);
+    public void removeLike(Integer userId) {
+        if (likes.contains(userId)) {
+            likes.remove(userId);
         }
     }
 
-    public Set<Integer> getLikers() {
-        return likers;
+    public Set<Integer> getLike() {
+        return likes;
     }
 
     public int getLikeCount() {
-        return likers.size();
+        return likes.size();
     }
 
     public int getId() {

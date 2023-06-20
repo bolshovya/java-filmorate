@@ -26,7 +26,7 @@ public class FilmsController {
 
     @GetMapping
     public List<Film> findAll() {
-        // log.info("GET-запрос списка всех фильмов: {}", filmsService.getSizeStorage());
+        log.info("GET-запрос списка всех фильмов: {}", filmsService.getSizeStorage());
         return filmsService.getListOfAllFilms();
     }
 
@@ -57,13 +57,13 @@ public class FilmsController {
     @PutMapping("/{id}/like/{userId}")
     public Film addLiker(@PathVariable int id, @PathVariable int userId) {
         log.info("PUT-запрос. Добавление лайка фильму c ID {} от пользователя с ID {}", id, userId);
-        return filmsService.addLiker(id, userId);
+        return filmsService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void removeLiker(@PathVariable int id, @PathVariable int userId) {
         log.info("DELETE-запрос. Удаление лайка у фильма с ID {} от пользователя с ID {}", id, userId);
-        filmsService.removeLiker(id, userId);
+        filmsService.removeLike(id, userId);
     }
 
 }

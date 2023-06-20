@@ -26,7 +26,7 @@ public class UsersController {
 
     @GetMapping
     public List<User> findAll() {
-        // log.info("GET-запрос списка всех пользователей: {}", usersService.getSizeStorage());
+        log.info("GET-запрос списка всех пользователей: {}", usersService.getSizeStorage());
         return usersService.getListOfAllUsers();
     }
 
