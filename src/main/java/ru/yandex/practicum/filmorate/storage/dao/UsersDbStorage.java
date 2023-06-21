@@ -47,7 +47,7 @@ public class UsersDbStorage implements UsersStorage {
             PreparedStatement stmt = con.prepareStatement(sqlQuery, new String[]{"id"});
             stmt.setString(1, user.getEmail());
             stmt.setString(2, user.getLogin());
-            stmt.setString(3, user.getEmail());
+            stmt.setString(3, user.getName());
             stmt.setDate(4, Date.valueOf(user.getBirthday()));
             return stmt;
         }, keyHolder);
@@ -61,6 +61,10 @@ public class UsersDbStorage implements UsersStorage {
     @Override
     public User findById(int id) throws UserNotFoundException {
         String sqlQuery = "SELECT * FROM users WHERE id=?";
+            if (jdbcTemplate.queryForObject(
+                "select count(*) from users where id = ?", Integer.class, id) == 0) {
+                throw new UserNotFoundException();
+            }
         return jdbcTemplate.queryForObject(sqlQuery, new UserMapper(), new Object[] {id});
     }
 
@@ -74,15 +78,20 @@ public class UsersDbStorage implements UsersStorage {
     // update
     @Override
     public User updateUser(User updatedUser) {
-        String sqlQuery = "UPDATE users SET email=?, login=?, name=?, birthday=?, WHERE id=?";
-        jdbcTemplate.update(sqlQuery,
+        String sqlQuery = "UPDATE users SET email=?, login=?, name=?, birthday=? WHERE id=?";
+        int valid = jdbcTemplate.update(sqlQuery,
                 updatedUser.getEmail(),
                 updatedUser.getLogin(),
                 updatedUser.getName(),
                 updatedUser.getBirthday(),
                 updatedUser.getId());
 
-        return jdbcTemplate.queryForObject(SQL_QUERY_USER_BY_ID, new UserMapper(), new Object[]{updatedUser.getId()});
+        if (valid == 0) {
+            throw new UserNotFoundException();
+        } else {
+            return jdbcTemplate.queryForObject(SQL_QUERY_USER_BY_ID, new UserMapper(), new Object[]{updatedUser.getId()});
+        }
+        // return jdbcTemplate.queryForObject(SQL_QUERY_USER_BY_ID, new UserMapper(), new Object[]{updatedUser.getId()});
     }
 
     // delete
@@ -100,6 +109,7 @@ public class UsersDbStorage implements UsersStorage {
 
         return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
     }
+
 
 
     private final class UserMapper implements RowMapper<User> {

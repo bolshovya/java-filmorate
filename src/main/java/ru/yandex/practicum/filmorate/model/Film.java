@@ -4,6 +4,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -22,43 +23,28 @@ public class Film {
     @Positive
     private int duration;
 
-    // private Set<Integer> likes = new LinkedHashSet<>();
+    private Set<Integer> likes = new HashSet<>();
 
-    private Set<Integer> likes;
-
-    private Genre genre;
+    private Set<Genre> genres = new HashSet<>();
 
     private Rating rating;
 
     public Film() {
     }
 
-    /*
-    public Film(String name, String description, String releaseDate, int duration) {
+
+    public Film(String name, String description, LocalDate releaseDate, int duration) {
         this.name = name;
         this.description = description;
-        this.releaseDate = LocalDate.parse(releaseDate);
+        this.releaseDate = releaseDate;
         this.duration = duration;
-        // this.likes = new LinkedHashSet<>();
-    }
-
-     */
-
-    public Film(String name, String description, String releaseDate, int duration) {
-        this.name = name;
-        this.description = description;
-        this.releaseDate = LocalDate.parse(releaseDate);
-        this.duration = duration;
-        this.likes = new LinkedHashSet<>();
-        this.genre = new Genre();
-        this.rating = new Rating();
     }
 
     public void addLike(User user) {
         likes.add(user.getId());
     }
 
-    public void addLike(Integer userId) {
+    public void addLike(int userId) {
         likes.add(userId);
     }
 
@@ -68,13 +54,13 @@ public class Film {
         }
     }
 
-    public void removeLike(Integer userId) {
+    public void removeLike(int userId) {
         if (likes.contains(userId)) {
             likes.remove(userId);
         }
     }
 
-    public Set<Integer> getLike() {
+    public Set<Integer> getLikes() {
         return likes;
     }
 

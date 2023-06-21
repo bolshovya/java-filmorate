@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exception.ValidationUsersException;
 import ru.yandex.practicum.filmorate.model.User;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,8 +19,8 @@ class UsersControllerTest {
     @BeforeEach
     void beforeEach() {
         usersController = new UsersController();
-        user1 = new User("alexeyi", "Alexey", "alexey@ivanov.ru", "2000-01-01");
-        user2 = new User("serega2023", "Sergey", "serega2023@mail.ru", "1990-02-02");
+        user1 = new User("alexeyi", "Alexey", "alexey@ivanov.ru", LocalDate.of(2000,1,1));
+        user2 = new User("serega2023", "Sergey", "serega2023@mail.ru", LocalDate.of(1990,2,2));
     }
 
     @Test
@@ -31,14 +32,14 @@ class UsersControllerTest {
 
     @Test
     void shouldReturnExceptionTest() {
-        User user3 = new User("ivanivi", "Ivan", "ivanivanov.ru", "1995-05-05");
+        User user3 = new User("ivanivi", "Ivan", "ivanivanov.ru", LocalDate.of(1995,5,5));
         Exception exception = assertThrows(ValidationUsersException.class, () -> usersController.create(user3));
         assertEquals("Email: incorrect date format.", exception.getMessage());
     }
 
     @Test
     void shouldReturnExceptionYearTest() {
-        User user3 = new User("ivanivi", "Ivan", "ivan@ivanov.ru", "2095-05-05");
+        User user3 = new User("ivanivi", "Ivan", "ivan@ivanov.ru", LocalDate.of(2095,5,5));
         Exception exception = assertThrows(ValidationUsersException.class, () -> usersController.create(user3));
         assertEquals("Birthday: incorrect date format.", exception.getMessage());
 
@@ -46,9 +47,9 @@ class UsersControllerTest {
 
     @Test
     void shouldReturnUserInsteadWithNameTest() {
-        User user3 = new User("ivanivi",null, "ivan@ivanov.ru", "1995-05-05");
+        User user3 = new User("ivanivi",null, "ivan@ivanov.ru", LocalDate.of(1995,5,5));
         usersController.create(user3);
-        User user4 = new User("ivanivi","ivanivi", "ivan@ivanov.ru", "1995-05-05");
+        User user4 = new User("ivanivi","ivanivi", "ivan@ivanov.ru", LocalDate.of(1995,5,5));
         user4.setId(user3.getId());
         assertEquals(user4, user3);
         assertEquals("ivanivi", user3.getName());

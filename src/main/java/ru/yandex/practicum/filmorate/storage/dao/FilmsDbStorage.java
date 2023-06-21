@@ -100,6 +100,8 @@ public class FilmsDbStorage implements FilmsStorage {
         return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
     }
 
+
+
     private final class FilmMapper implements RowMapper<Film> {
         @Override
         public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
