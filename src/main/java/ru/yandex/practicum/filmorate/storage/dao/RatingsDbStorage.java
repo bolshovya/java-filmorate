@@ -34,13 +34,15 @@ public class RatingsDbStorage implements RatingsStorage {
         return jdbcTemplate.query(sqlQuery, new RatingMapper());
     }
 
+
+
     private final class RatingMapper implements RowMapper<Rating> {
 
         @Override
         public Rating mapRow(ResultSet rs, int rowNum) throws SQLException {
             Rating rating = new Rating();
 
-            rating.setFilmId(rs.getInt("film_id"));
+            rating.setId(rs.getInt("id"));
             rating.setRating(rs.getString("rating"));
 
             return rating;

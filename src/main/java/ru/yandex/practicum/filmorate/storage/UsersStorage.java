@@ -18,4 +18,6 @@ public interface UsersStorage {
     public User removeUserFromStorage(User removedUser);
 
     public int getSizeStorage();
+
+    public List<User> getFriendListById(int id);
 }

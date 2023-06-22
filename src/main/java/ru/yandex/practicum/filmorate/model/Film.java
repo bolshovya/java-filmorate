@@ -27,17 +27,18 @@ public class Film {
 
     private Set<Genre> genres = new HashSet<>();
 
-    private Rating rating;
+    private Rating mpa;
 
     public Film() {
     }
 
 
-    public Film(String name, String description, LocalDate releaseDate, int duration) {
+    public Film(String name, String description, LocalDate releaseDate, int duration, Rating mpa) {
         this.name = name;
         this.description = description;
         this.releaseDate = releaseDate;
         this.duration = duration;
+        this.mpa = mpa;
     }
 
     public void addLike(User user) {
@@ -130,5 +131,25 @@ public class Film {
                 ", releaseDate=" + releaseDate +
                 ", duration=" + duration +
                 '}';
+    }
+
+    public void setLikes(Set<Integer> likes) {
+        this.likes = likes;
+    }
+
+    public Set<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(Set<Genre> genres) {
+        this.genres = genres;
+    }
+
+    public Rating getMpa() {
+        return mpa;
+    }
+
+    public void setMpa(Rating mpa) {
+        this.mpa = mpa;
     }
 }

@@ -3,7 +3,7 @@ package ru.yandex.practicum.filmorate.model;
 import java.util.Objects;
 
 public class Rating {
-    private int filmId;
+    private int id;
 
     private String rating;
 
@@ -11,17 +11,18 @@ public class Rating {
     public Rating() {
     }
 
-    public Rating(int filmId, String rating) {
-        this.filmId = filmId;
+    public Rating(int id, String rating) {
+        this.id = id;
         this.rating = rating;
     }
 
-    public int getFilmId() {
-        return filmId;
+
+    public int getId() {
+        return id;
     }
 
-    public void setFilmId(int filmId) {
-        this.filmId = filmId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getRating() {
@@ -32,26 +33,24 @@ public class Rating {
         this.rating = rating;
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Rating rating1 = (Rating) o;
-        return filmId == rating1.filmId && Objects.equals(rating, rating1.rating);
+        return id == rating1.id && Objects.equals(rating, rating1.rating);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(filmId, rating);
+        return Objects.hash(id, rating);
     }
 
     @Override
     public String toString() {
         return "Rating{" +
-                "filmId=" + filmId +
+                "id=" + id +
                 ", rating='" + rating + '\'' +
                 '}';
     }
-
 }

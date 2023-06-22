@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.storage.UsersStorage;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -70,6 +71,11 @@ public class InMemoryUsersStorage implements UsersStorage {
 
     public int getSizeStorage() {
         return usersStorage.size();
+    }
+
+    @Override
+    public List<User> getFriendListById(int id) {
+        return findById(id).getFriends().stream().collect(Collectors.toList());
     }
 
 

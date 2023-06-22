@@ -5,6 +5,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -22,7 +23,9 @@ public class User {
     @Past
     private LocalDate birthday;
 
-    private Set<Integer> friends = new HashSet<>();
+    private Set<User> friends = new HashSet<>();
+
+    private Set<Integer> friendsId = new HashSet<>();
 
     private Set<Integer> films = new HashSet<>();
 
@@ -48,11 +51,11 @@ public class User {
     }
 
     public void addFriend(User user) {
-        friends.add(user.getId());
+        friends.add(user);
     }
 
-    public void addFriend(Integer userId) {
-        friends.add(userId);
+    public void addFriendById(Integer userId) {
+        friendsId.add(userId);
     }
 
     public void removeFriend(User user) {
@@ -63,9 +66,6 @@ public class User {
         friends.remove(userId);
     }
 
-    public Set<Integer> getFriends() {
-        return friends;
-    }
 
     public int getId() {
         return id;
@@ -107,6 +107,7 @@ public class User {
         this.birthday = birthday;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -129,5 +130,31 @@ public class User {
                 ", name='" + name + '\'' +
                 ", birthday=" + birthday +
                 '}';
+    }
+
+    public Set<Integer> getFriendsId() {
+        return friendsId;
+    }
+
+    public void setFriendsId(Set<Integer> friendsId) {
+        this.friendsId = friendsId;
+    }
+
+
+
+    public Set<Integer> getFilms() {
+        return films;
+    }
+
+    public void setFilms(Set<Integer> films) {
+        this.films = films;
+    }
+
+    public Set<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<User> friends) {
+        this.friends = friends;
     }
 }

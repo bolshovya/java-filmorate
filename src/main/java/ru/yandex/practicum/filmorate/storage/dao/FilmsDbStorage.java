@@ -8,6 +8,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Rating;
 import ru.yandex.practicum.filmorate.storage.FilmsStorage;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -30,7 +31,7 @@ public class FilmsDbStorage implements FilmsStorage {
     // create
     @Override
     public Film addFilm(Film film) {
-        String sqlQuery = "INSERT INTO films (name, description, releaseDate, duration) VALUES (?, ?, ?, ?)";
+        String sqlQuery = "INSERT INTO films (name, description, releaseDate, duration, rating) VALUES (?, ?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement stmt = con.prepareStatement(sqlQuery, new String[]{"id"});
@@ -38,6 +39,7 @@ public class FilmsDbStorage implements FilmsStorage {
             stmt.setString(2, film.getDescription());
             stmt.setDate(3, Date.valueOf(film.getReleaseDate()));
             stmt.setInt(4, film.getDuration());
+            stmt.setInt(5, film.getMpa().getId());
             return stmt;
         }, keyHolder);
 
@@ -112,6 +114,10 @@ public class FilmsDbStorage implements FilmsStorage {
             film.setDescription(rs.getString("description"));
             film.setReleaseDate(rs.getDate("releaseDate").toLocalDate());
             film.setDuration(rs.getInt("duration"));
+
+            Rating mpa = new Rating();
+            mpa.setId(rs.getInt("rating"));
+            film.setMpa(mpa);
 
             return film;
         }

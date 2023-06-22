@@ -40,8 +40,7 @@ public class UsersService {
     }
 
     public List<User> getFriendListById(int userId) {
-        User searchedUser = usersStorage.findById(userId);
-        return searchedUser.getFriends().stream().map(x -> usersStorage.findById(x)).collect(Collectors.toList());
+        return usersStorage.getFriendListById(userId);
     }
 
     public List<User> addToFriends(int userId1, int userId2) {  // добавление в друзья
@@ -64,10 +63,10 @@ public class UsersService {
         return List.of(user1, user2);
     }
 
-    public Set<Integer> getListIdMutualFriends(int userId1, int userId2) { // вывод списка общих друзей
+    public Set<User> getListIdMutualFriends(int userId1, int userId2) { // вывод списка общих друзей
         User user1 = usersStorage.findById(userId1);
         User user2 = usersStorage.findById(userId2);
-        Set<Integer> mutualSet = new LinkedHashSet<>(user1.getFriends());
+        Set<User> mutualSet = new HashSet<>(user1.getFriends());
         mutualSet.retainAll(user2.getFriends());
         return mutualSet;
     }
@@ -75,9 +74,9 @@ public class UsersService {
     public List<User> findMutualFriends(int userId1, int userId2) { // вывод списка общих друзей
         User user1 = usersStorage.findById(userId1);
         User user2 = usersStorage.findById(userId2);
-        Set<Integer> mutualSet = new LinkedHashSet<>(user1.getFriends());
+        Set<User> mutualSet = new HashSet<>(user1.getFriends());
         mutualSet.retainAll(user2.getFriends());
-        return mutualSet.stream().map(x -> usersStorage.findById(x)).collect(Collectors.toList());
+        return mutualSet.stream().collect(Collectors.toList());
     }
 
 }

@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UsersStorage;
 import java.sql.Date;
@@ -14,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+
 
 @Component
 public class UsersDbStorage implements UsersStorage {
@@ -65,7 +67,21 @@ public class UsersDbStorage implements UsersStorage {
                 "select count(*) from users where id = ?", Integer.class, id) == 0) {
                 throw new UserNotFoundException();
             }
-        return jdbcTemplate.queryForObject(sqlQuery, new UserMapper(), new Object[] {id});
+        // return jdbcTemplate.queryForObject(sqlQuery, new UserMapper(), new Object[] {id});
+        User returnedUser = jdbcTemplate.queryForObject(sqlQuery, new UserMapper(), new Object[] {id});
+
+        // String sqlQueryFriendships = "SELECT * friendships WHERE user_id=?";
+        // List<Friendship> friendships = jdbcTemplate.query(sqlQuery, new FriendshipMapper());
+        // returnedUser.setFriends(friendships.stream().filter(x -> x.getUserId()==id).map(x -> x.getFriendId()).collect(Collectors.toSet()));
+
+        // returnedUser.setFriends(jdbcTemplate.query(sqlQuery, new UserMapper()).stream().collect(Collectors.toSet()));
+        return returnedUser;
+    }
+
+
+    public List<User> getFriendListById(int id) {
+        String sqlQuery = "SELECT * FROM users WHERE id IN (SELECT friend_id FROM friendships WHERE user_id=?)";
+        return jdbcTemplate.query(sqlQuery, new UserMapper(), id);
     }
 
     @Override
@@ -102,6 +118,12 @@ public class UsersDbStorage implements UsersStorage {
         return jdbcTemplate.queryForObject(SQL_QUERY_USER_BY_ID, new UserMapper(), new Object[]{removedUser.getId()});
     }
 
+    public List<User> getFriends(int id) {
+        String sqlQuery = "SELECT * friendships WHERE user_id=?";
+
+        return jdbcTemplate.query(sqlQuery, new UserMapper());
+    }
+
 
     @Override
     public int getSizeStorage() {
@@ -124,6 +146,20 @@ public class UsersDbStorage implements UsersStorage {
             user.setBirthday(rs.getDate("birthday").toLocalDate());
 
             return user;
+        }
+    }
+
+    private final class FriendshipMapper implements RowMapper<Friendship> {
+
+        @Override
+        public Friendship mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Friendship friendship = new Friendship();
+
+            friendship.setUserId(rs.getInt("user_id"));
+            friendship.setFriendId(rs.getInt("friend_id"));
+            friendship.setConfirmation(rs.getBoolean("confirmation"));
+
+            return friendship;
         }
     }
 
