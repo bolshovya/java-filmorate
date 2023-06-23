@@ -82,6 +82,7 @@ public class UsersDbStorage implements UsersStorage {
     public List<User> getFriendListById(int id) {
         String sqlQuery = "SELECT * FROM users WHERE id IN (SELECT friend_id FROM friendships WHERE user_id=?)";
         return jdbcTemplate.query(sqlQuery, new UserMapper(), id);
+
     }
 
     @Override
