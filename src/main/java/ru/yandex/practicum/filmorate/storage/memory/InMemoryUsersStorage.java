@@ -78,6 +78,16 @@ public class InMemoryUsersStorage implements UsersStorage {
         return findById(id).getFriends().stream().collect(Collectors.toList());
     }
 
+    @Override
+    public void addToFriends(int userId1, int userId2) {  // добавление в друзья
+        User user1 = findById(userId1);
+        User user2 = findById(userId2);
+        user1.addFriend(user2);
+        updateUser(user1);
+        user2.addFriend(user1);
+        updateUser(user2);
+        // return List.of(user1, user2);
+    }
 
 
 }

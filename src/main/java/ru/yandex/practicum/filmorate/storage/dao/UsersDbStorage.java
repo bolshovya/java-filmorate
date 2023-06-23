@@ -1,12 +1,14 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationUsersException;
 import ru.yandex.practicum.filmorate.model.Friendship;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UsersStorage;
@@ -82,6 +84,12 @@ public class UsersDbStorage implements UsersStorage {
     public List<User> getFriendListById(int id) {
         String sqlQuery = "SELECT * FROM users WHERE id IN (SELECT friend_id FROM friendships WHERE user_id=?)";
         return jdbcTemplate.query(sqlQuery, new UserMapper(), id);
+    }
+
+    @Override
+    public void addToFriends(int userId1, int userId2) {
+        String sqlQuery = "INSERT INTO friendships (user_id, friend_id) VALUES (?, ?)";
+        jdbcTemplate.update(sqlQuery, userId1, userId2);
     }
 
     @Override

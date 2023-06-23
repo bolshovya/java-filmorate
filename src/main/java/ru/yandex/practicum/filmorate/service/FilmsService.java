@@ -32,6 +32,7 @@ public class FilmsService {
 
     public Film addFilm(Film addedFilm) {
         Film filmToReturn = filmsStorage.addFilm(addedFilm);
+        // filmToReturn.setGenres(genresStorage.findGenresByFilmID(filmToReturn.getId()));
         // filmToReturn.setMpa(ratingsStorage.findById(addedFilm.getMpa().getId()));
         // filmToReturn.setMpa(ratingsStorage.findById(filmToReturn.getId()));
         return filmToReturn;

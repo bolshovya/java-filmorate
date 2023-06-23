@@ -66,9 +66,9 @@ public class UsersController {
     }
 
     @PutMapping("/{id}/friends/{friendId}")
-    public List<User> addToFriends(@PathVariable int id, @PathVariable int friendId) {
+    public void addToFriends(@Valid @PathVariable int id, @PathVariable int friendId) {
         log.info("PUT-запрос. Добавление друзей: {}, {}", id, friendId);
-        return usersService.addToFriends(id, friendId);
+        usersService.addToFriends(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")

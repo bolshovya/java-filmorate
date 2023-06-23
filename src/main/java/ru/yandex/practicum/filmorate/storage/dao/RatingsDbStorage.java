@@ -34,6 +34,11 @@ public class RatingsDbStorage implements RatingsStorage {
         return jdbcTemplate.query(sqlQuery, new RatingMapper());
     }
 
+    public String findRating(int id) {
+        String sqlQuery = "SELECT rating FROM ratings WHERE id=?";
+        return jdbcTemplate.queryForObject(sqlQuery, new RatingMapper()).getRating();
+    }
+
 
 
     private final class RatingMapper implements RowMapper<Rating> {

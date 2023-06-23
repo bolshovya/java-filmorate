@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -10,6 +11,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Film {
+
 
     private int id;
 

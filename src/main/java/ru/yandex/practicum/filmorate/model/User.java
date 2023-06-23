@@ -1,8 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Past;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
@@ -10,6 +8,8 @@ import java.util.Objects;
 import java.util.Set;
 
 public class User {
+
+
     private int id;
 
     @NotBlank

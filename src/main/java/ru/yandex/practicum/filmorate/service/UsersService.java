@@ -1,7 +1,10 @@
 package ru.yandex.practicum.filmorate.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationUsersException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UsersStorage;
 import ru.yandex.practicum.filmorate.storage.dao.UsersDbStorage;
@@ -43,14 +46,11 @@ public class UsersService {
         return usersStorage.getFriendListById(userId);
     }
 
-    public List<User> addToFriends(int userId1, int userId2) {  // добавление в друзья
-        User user1 = usersStorage.findById(userId1);
-        User user2 = usersStorage.findById(userId2);
-        user1.addFriend(user2);
-        usersStorage.updateUser(user1);
-        user2.addFriend(user1);
-        usersStorage.updateUser(user2);
-        return List.of(user1, user2);
+    public void addToFriends(int userId1, int userId2) {  // добавление в друзья
+        if (usersStorage.findById(userId1) == null | usersStorage.findById(userId2) == null) {
+            throw new UserNotFoundException();
+        }
+        usersStorage.addToFriends(userId1, userId2);
     }
 
     public List<User> removeFromFriends(int userId1, int userId2) { // удаление из друзей
