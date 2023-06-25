@@ -58,13 +58,8 @@ public class InMemoryFilmsStorage implements FilmsStorage {
         return removedFilm;
     }
 
-    public Film findById(int id) throws FilmNotFoundException {
-        if (!filmsStorage.containsKey(id)) {
-            log.error("FilmNotFoundException: film with this id not found");
-            throw new FilmNotFoundException();
-        } else {
-            return filmsStorage.get(id);
-        }
+    public Optional<Film> findById(int id) {
+        return Optional.of(filmsStorage.get(id));
     }
 
     public List<Film> getListOfAllFilms() {

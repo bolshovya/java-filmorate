@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,10 +14,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class GenresDbStorage implements GenresStorage {
 
     private final JdbcTemplate jdbcTemplate;
@@ -31,11 +34,12 @@ public class GenresDbStorage implements GenresStorage {
 
     @Override
     public Genre addGenre(Genre genre) {
+        log.info("GenresDbStorage: сохранение жанра: {}", genre);
         String sqlQuery = "INSERT INTO genres (genre) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement stmt = con.prepareStatement(sqlQuery, new String[]{"id"});
-            stmt.setString(1, genre.getGenre());
+            stmt.setString(1, genre.getName());
             return stmt;
         }, keyHolder);
 
@@ -44,23 +48,23 @@ public class GenresDbStorage implements GenresStorage {
         return jdbcTemplate.queryForObject(sqlQuery, new GenreMapper(), new Object[]{genreKey});
     }
 
-
-
     @Override
-    public Genre findById(int id) {
-        String sqlQuery = "SELECT * FROM genres WHERE id=?";
-        return jdbcTemplate.queryForObject(sqlQuery, new GenreMapper());
+    public Optional<Genre> findById(int id) {
+        log.info("GenresDbStorage: получение жанра с id: {}", id);
+        return jdbcTemplate.query(SQL_QUERY_GENRE_BY_ID, new GenreMapper(), id).stream().findAny();
     }
 
     @Override
     public List<Genre> getListOfAllGenre() {
+        log.info("GenresDbStorage: получение списка всех жанров");
         String sqlQuery = "SELECT * FROM genres";
         return jdbcTemplate.query(sqlQuery, new GenreMapper());
     }
 
     @Override
     public Set<Genre> findGenresByFilmID(int filmId) {
-        String sqlQuery = "SELECT * g.id, g.genre FROM genres g JOIN filmGenres fg ON g.id = fg.genre_id WHERE fg.film_id =?";
+        log.info("GenresDbStorage: получение множества жанров фильма с id: {}", filmId);
+        String sqlQuery = "SELECT * g.id, g.name FROM genres g JOIN filmGenres fg ON g.id = fg.genre_id WHERE fg.film_id =?";
         return jdbcTemplate.query(sqlQuery, new GenreMapper()).stream().collect(Collectors.toSet());
     }
 
@@ -71,7 +75,7 @@ public class GenresDbStorage implements GenresStorage {
             Genre genre = new Genre();
 
             genre.setId(rs.getInt("id"));
-            genre.setGenre(rs.getString("genre"));
+            genre.setName(rs.getString("name"));
 
             return genre;
         }

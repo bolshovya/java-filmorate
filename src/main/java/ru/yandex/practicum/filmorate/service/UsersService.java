@@ -72,11 +72,7 @@ public class UsersService {
     }
 
     public List<User> findMutualFriends(int userId1, int userId2) { // вывод списка общих друзей
-        User user1 = usersStorage.findById(userId1);
-        User user2 = usersStorage.findById(userId2);
-        Set<User> mutualSet = new HashSet<>(user1.getFriends());
-        mutualSet.retainAll(user2.getFriends());
-        return mutualSet.stream().collect(Collectors.toList());
+        return usersStorage.findMutualFriends(userId1, userId2);
     }
 
 }

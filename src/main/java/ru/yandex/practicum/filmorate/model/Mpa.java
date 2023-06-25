@@ -2,18 +2,17 @@ package ru.yandex.practicum.filmorate.model;
 
 import java.util.Objects;
 
-public class Rating {
+public class Mpa {
     private int id;
 
-    private String rating;
+    private String name;
 
-
-    public Rating() {
+    public Mpa() {
     }
 
-    public Rating(int id, String rating) {
+    public Mpa(int id, String name) {
         this.id = id;
-        this.rating = rating;
+        this.name = name;
     }
 
 
@@ -25,32 +24,32 @@ public class Rating {
         this.id = id;
     }
 
-    public String getRating() {
-        return rating;
+    public String getName() {
+        return name;
     }
 
-    public void setRating(String rating) {
-        this.rating = rating;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Rating rating1 = (Rating) o;
-        return id == rating1.id && Objects.equals(rating, rating1.rating);
+        Mpa mpa = (Mpa) o;
+        return id == mpa.id && Objects.equals(name, mpa.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, rating);
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
-        return "Rating{" +
+        return "Mpa{" +
                 "id=" + id +
-                ", rating='" + rating + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

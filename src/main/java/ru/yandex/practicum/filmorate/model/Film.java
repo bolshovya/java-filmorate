@@ -12,7 +12,6 @@ import java.util.Set;
 
 public class Film {
 
-
     private int id;
 
     @NotBlank
@@ -29,16 +28,13 @@ public class Film {
 
     private Set<Genre> genres = new HashSet<>();
 
-    private Rating mpa;
+    private Mpa mpa;
 
     public Film() {
     }
 
 
-    public Film(String name, String description, LocalDate releaseDate, int duration, Rating mpa) {
-        this.name = name;
-        this.description = description;
-        this.releaseDate = releaseDate;
+    public Film(String name, String description, LocalDate releaseDate, int duration, Mpa mpa) {
         this.duration = duration;
         this.mpa = mpa;
     }
@@ -147,11 +143,11 @@ public class Film {
         this.genres = genres;
     }
 
-    public Rating getMpa() {
+    public Mpa getMpa() {
         return mpa;
     }
 
-    public void setMpa(Rating mpa) {
+    public void setMpa(Mpa mpa) {
         this.mpa = mpa;
     }
 }

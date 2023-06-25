@@ -89,5 +89,14 @@ public class InMemoryUsersStorage implements UsersStorage {
         // return List.of(user1, user2);
     }
 
+    @Override
+    public List<User> findMutualFriends(int userId1, int userId2) {
+        User user1 = findById(userId1);
+        User user2 = findById(userId2);
+        Set<User> mutualSet = new HashSet<>(user1.getFriends());
+        mutualSet.retainAll(user2.getFriends());
+        return mutualSet.stream().collect(Collectors.toList());
+    }
+
 
 }

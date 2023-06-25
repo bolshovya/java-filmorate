@@ -16,7 +16,10 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Component
@@ -138,6 +141,19 @@ public class UsersDbStorage implements UsersStorage {
         String sqlQuery = "SELECT COUNT(id) FROM users";
 
         return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
+    }
+
+    @Override
+    public List<User> findMutualFriends(int userId1, int userId2) {
+        User user1 = findById(userId1);
+        List<User> user1List = getFriendListById(userId1);
+        user1.setFriends(new HashSet<>(user1List));
+        User user2 = findById(userId2);
+        List<User> user2List = getFriendListById(userId2);
+        user2.setFriends(new HashSet<>(user2List));
+        Set<User> mutualSet = new HashSet<>(user1.getFriends());
+        mutualSet.retainAll(user2.getFriends());
+        return mutualSet.stream().collect(Collectors.toList());
     }
 
 

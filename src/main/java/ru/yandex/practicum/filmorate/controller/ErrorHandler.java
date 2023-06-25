@@ -50,9 +50,23 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleMpaNotFoundException(final MpaNotFoundException e) {
+        log.debug("Рейтинг не найден. Получен статус 404 {}", e.getMessage());
+        return new ErrorResponse("MpaNotFoundException:", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleManagerException(final ManagerException e) {
         log.debug("Получен статус 404 {}", e.getMessage());
         return new ErrorResponse("ManagerException:", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleGenreNotFoundException(final GenreNotFoundException e) {
+        log.debug("Жанр не найден. Получен статус 404 {}", e.getMessage());
+        return new ErrorResponse("GenreNotFoundException:", e.getMessage());
     }
 
     @ExceptionHandler

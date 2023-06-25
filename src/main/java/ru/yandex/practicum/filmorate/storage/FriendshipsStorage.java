@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface FriendshipsStorage {
 
-    public Friendship findById(int id);
+    Friendship findById(int id);
 
-    public List<Friendship> getListOfAllFriendship();
+    List<Friendship> getListOfAllFriendship();
 }

@@ -6,14 +6,14 @@ public class Genre {
 
     public int id;
 
-    public String genre;
+    public String name;
 
     public Genre() {
     }
 
-    public Genre(int id, String genre) {
+    public Genre(int id, String name) {
         this.id = id;
-        this.genre = genre;
+        this.name = name;
     }
 
     public int getId() {
@@ -24,19 +24,19 @@ public class Genre {
         this.id = id;
     }
 
-    public String getGenre() {
-        return genre;
+    public String getName() {
+        return name;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
     public String toString() {
         return "Genre{" +
                 "id=" + id +
-                ", genre='" + genre + '\'' +
+                ", name='" + name + '\'' +
                 '}';
     }
 
@@ -45,11 +45,11 @@ public class Genre {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Genre genre1 = (Genre) o;
-        return id == genre1.id && Objects.equals(genre, genre1.genre);
+        return id == genre1.id && Objects.equals(name, genre1.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, genre);
+        return Objects.hash(id, name);
     }
 }

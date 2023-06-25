@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.yandex.practicum.filmorate.model.Rating;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.FilmsService;
 
 import java.util.List;
@@ -16,25 +16,25 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/mpa")
-public class RatingsController {
+public class MpaController {
 
     private final FilmsService filmsService;
 
     @Autowired
-    public RatingsController(FilmsService filmsService) {
+    public MpaController(FilmsService filmsService) {
         this.filmsService = filmsService;
     }
 
     @GetMapping
-    public List<Rating> findAll() {
-        log.info("GET-запрос списка всех рейтингов.");
-        return filmsService.getListOfAllRatings();
+    public List<Mpa> findAll() {
+        log.info("GET: получение списка всех рейтингов");
+        return filmsService.getListOfAllMpa();
     }
 
     @GetMapping("/{id}")
-    public Rating findById(@PathVariable int id) {
-        log.info("GET-запрос рейтинга по ID: {}", id);
-        return filmsService.findRatingById(id);
+    public Mpa findById(@PathVariable int id) {
+        log.info("GET: получение рейтинга с id: {}", id);
+        return filmsService.findMpaById(id);
     }
 
 

@@ -22,4 +22,6 @@ public interface UsersStorage {
     List<User> getFriendListById(int id);
 
     void addToFriends(int userId1, int userId2);
+
+    List<User> findMutualFriends(int userId1, int userId2);
 }
