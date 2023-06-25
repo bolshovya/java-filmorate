@@ -1,4 +1,4 @@
 # java-filmorate
 
 ## Схема базы данных:
-![Схема БД](https://github.com/bolshovya/java-filmorate/blob/add-friends-likes/filmorate.png)
+![Схема БД](https://github.com/bolshovya/java-filmorate/blob/add-database/filmorate.png)
