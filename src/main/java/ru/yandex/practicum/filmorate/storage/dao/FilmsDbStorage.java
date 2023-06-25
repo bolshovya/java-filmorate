@@ -56,7 +56,6 @@ public class FilmsDbStorage implements FilmsStorage {
 
         int filmKey = keyHolder.getKey().intValue();
 
-        // return jdbcTemplate.queryForObject(SQL_QUERY_FILM_BY_ID, new FilmMapper(), new Object[]{filmKey});
         addedFilm.setId(filmKey);
 
         String sqlQueryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES (?, ?)";
@@ -119,12 +118,27 @@ public class FilmsDbStorage implements FilmsStorage {
     }
 
     @Override
+    public void addLike(int filmId, int userId) { // добавление лайка
+        log.info("FilmsDbStorage: добавление лайка фильму с id: {} от пользователя с id: {}", filmId, userId);
+        String sqlQuery = "UPDATE likes SET film_id=?, user_id=?";
+        jdbcTemplate.update(sqlQuery, filmId, userId);
+    }
+
+    @Override
+    public void removeLike(int filmId, int userId) {
+        log.info("FilmsDbStorage: удаление ллайка фульма с id: {} от пользователя с id: {}", filmId, userId);
+
+        String sqlQuery = "DELETE FROM likes WHERE film_id=? AND user_id=?";
+        jdbcTemplate.update(sqlQuery, filmId, userId);
+    }
+
+    @Override
     public Film removeFilmFromStorage(Film removedFilm) {
         log.info("FilmsDbStorage: удаление фильма: {}", removedFilm);
         String sqlQuery = "DELETE FROM films WHERE id=?";
         jdbcTemplate.update(sqlQuery, removedFilm.getId());
 
-        return jdbcTemplate.queryForObject(SQL_QUERY_FILM_BY_ID, new FilmMapper(), new Object[]{removedFilm.getId()});
+        return jdbcTemplate.queryForObject(SQL_QUERY_FILM_BY_ID, new FilmMapper(), removedFilm.getId());
     }
 
     public int getSizeStorage() {

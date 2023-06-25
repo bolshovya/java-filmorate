@@ -70,4 +70,20 @@ public class InMemoryFilmsStorage implements FilmsStorage {
         return filmsStorage.size();
     }
 
+    @Override
+    public void addLike(int filmId, int userId) { // добавление лайка
+        log.info("InMemoryFilmsStorage: добавление лайка фильму с id {} от пользователя с id {}", filmId, userId);
+        Film searchedFilm = findById(filmId).get();
+        searchedFilm.addLike(userId);
+        updateFilm(searchedFilm);
+    }
+
+    @Override
+    public void removeLike(int filmId, int userId) {  // удаление лайка
+        log.info("InMemoryFilmsStorage: удаление лайка у фильма с id {} от пользователя с id {}", filmId, userId);
+        Film searchedFilm = findById(filmId).get();
+        searchedFilm.removeLike(userId);
+        updateFilm(searchedFilm);
+    }
+
 }

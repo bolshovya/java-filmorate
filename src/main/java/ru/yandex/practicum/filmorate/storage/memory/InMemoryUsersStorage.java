@@ -56,13 +56,8 @@ public class InMemoryUsersStorage implements UsersStorage {
         return removedUser;
     }
 
-    public User findById(int id) throws UserNotFoundException {
-        if (!usersStorage.containsKey(id)) {
-            log.error("UserNotFoundException: user with this id not found");
-            throw new UserNotFoundException();
-        } else {
-            return usersStorage.get(id);
-        }
+    public Optional<User> findById(int id) {
+        return Optional.of(usersStorage.get(id));
     }
 
     public List<User> getListOfAllUsers() {
@@ -75,28 +70,36 @@ public class InMemoryUsersStorage implements UsersStorage {
 
     @Override
     public List<User> getFriendListById(int id) {
-        return findById(id).getFriends().stream().collect(Collectors.toList());
+        return findById(id).get().getFriends().stream().collect(Collectors.toList());
     }
 
     @Override
     public void addToFriends(int userId1, int userId2) {  // добавление в друзья
-        User user1 = findById(userId1);
-        User user2 = findById(userId2);
+        User user1 = findById(userId1).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId1 + " не найден)"));
+        User user2 = findById(userId2).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId2 + " не найден)"));
         user1.addFriend(user2);
         updateUser(user1);
         user2.addFriend(user1);
         updateUser(user2);
-        // return List.of(user1, user2);
     }
 
     @Override
     public List<User> findMutualFriends(int userId1, int userId2) {
-        User user1 = findById(userId1);
-        User user2 = findById(userId2);
+        User user1 = findById(userId1).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId1 + " не найден)"));
+        User user2 = findById(userId2).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId2 + " не найден)"));
         Set<User> mutualSet = new HashSet<>(user1.getFriends());
         mutualSet.retainAll(user2.getFriends());
         return mutualSet.stream().collect(Collectors.toList());
     }
 
+    @Override
+    public void removeFromFriends(int userId1, int userId2) { // удаление из друзей
+        User user1 = findById(userId1).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId1 + " не найден)"));
+        User user2 = findById(userId2).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId2 + " не найден)"));
+        user1.removeFriend(user2);
+        updateUser(user1);
+        user2.removeFriend(user1);
+        updateUser(user2);
+    }
 
 }

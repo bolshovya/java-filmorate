@@ -55,9 +55,9 @@ public class FilmsController {
     }
 
     @PutMapping("/{id}/like/{userId}")
-    public Film addLiker(@PathVariable int id, @PathVariable int userId) {
+    public void addLiker(@PathVariable int id, @PathVariable int userId) {
         log.info("PUT: добавление лайка фильму c id {} от пользователя с id {}", id, userId);
-        return filmsService.addLike(id, userId);
+        filmsService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
