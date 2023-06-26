@@ -21,8 +21,6 @@ public class GenresDbStorage implements GenresStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final String SQL_QUERY_GENRE_BY_ID = "SELECT * FROM genres WHERE id=?";
-
     @Autowired
     public GenresDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -48,7 +46,7 @@ public class GenresDbStorage implements GenresStorage {
     @Override
     public Optional<Genre> findById(int id) {
         log.info("GenresDbStorage: получение жанра с id: {}", id);
-        return jdbcTemplate.query(SQL_QUERY_GENRE_BY_ID, new GenreMapper(), id).stream().findAny();
+        return jdbcTemplate.query("SELECT * FROM genres WHERE id=?", new GenreMapper(), id).stream().findAny();
     }
 
     @Override
