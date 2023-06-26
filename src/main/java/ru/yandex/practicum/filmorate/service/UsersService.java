@@ -50,12 +50,6 @@ public class UsersService {
     }
 
     public void addToFriends(int userId1, int userId2) {  // добавление в друзья
-        /*
-        if (usersStorage.findById(userId1) == null | usersStorage.findById(userId2) == null) {
-            throw new UserNotFoundException();
-        }
-
-         */
         log.info("UsersService: добавление дружбы между пользователеми с id: {}, {}", userId1, userId2);
         usersStorage.findById(userId1).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId1 + " не найден)"));
         usersStorage.findById(userId2).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId2 + " не найден)"));

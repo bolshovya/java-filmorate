@@ -130,18 +130,6 @@ public class UsersDbStorage implements UsersStorage {
                 "(SELECT f.FRIEND_ID  FROM FRIENDSHIPS f " +
                 "JOIN FRIENDSHIPS f2 ON f.FRIEND_ID = f2.FRIEND_ID AND f.USER_ID =? AND f2.USER_ID =?)";
         return jdbcTemplate.query(sqlQuery, new UserMapper(), userId1, userId2);
-        /*
-        User user1 = findById(userId1);
-        List<User> user1List = getFriendListById(userId1);
-        user1.setFriends(new HashSet<>(user1List));
-        User user2 = findById(userId2);
-        List<User> user2List = getFriendListById(userId2);
-        user2.setFriends(new HashSet<>(user2List));
-        Set<User> mutualSet = new HashSet<>(user1.getFriends());
-        mutualSet.retainAll(user2.getFriends());
-        return mutualSet.stream().collect(Collectors.toList());
-
-         */
     }
 
     @Override
@@ -181,27 +169,4 @@ public class UsersDbStorage implements UsersStorage {
             return friendship;
         }
     }
-
-
-
-    /*
-    private class UserMapper implements RowMapper<Optional<User>> {
-
-        @Override
-        public Optional<User> mapRow(ResultSet rs, int rowNum) throws SQLException {
-            if (rs.wasNull()) {
-                return Optional.empty();
-            } else {
-                User user = new User();
-                user.setId(rs.getInt("id"));
-                user.setEmail(rs.getString("email"));
-                user.setLogin(rs.getString("login"));
-                user.setName(rs.getString("name"));
-                user.setBirthday(rs.getDate("birthday").toLocalDate());
-                return Optional.of(user);
-            }
-        }
-    }
-
-     */
 }

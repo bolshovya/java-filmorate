@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.model;
 
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
@@ -35,6 +34,14 @@ public class Film {
 
 
     public Film(String name, String description, LocalDate releaseDate, int duration, Mpa mpa) {
+        this.duration = duration;
+        this.mpa = mpa;
+    }
+
+    public Film(String name, String description, LocalDate releaseDate, int duration) {
+        this.name = name;
+        this.description = description;
+        this.releaseDate = releaseDate;
         this.duration = duration;
         this.mpa = mpa;
     }
