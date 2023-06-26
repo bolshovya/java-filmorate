@@ -1,33 +1,35 @@
 package ru.yandex.practicum.filmorate.model;
 
+
 import java.util.Objects;
 
 public class Like {
-    private int film_id;
-    private int user_id;
+    private int filmId;
+    private int userId;
+
 
     public Like() {
     }
 
-    public Like(int film_id, int user_id) {
-        this.film_id = film_id;
-        this.user_id = user_id;
+    public Like(int filmId, int userId) {
+        this.filmId = filmId;
+        this.userId = userId;
     }
 
-    public int getFilm_id() {
-        return film_id;
+    public int getFilmId() {
+        return filmId;
     }
 
-    public void setFilm_id(int film_id) {
-        this.film_id = film_id;
+    public void setFilmId(int filmId) {
+        this.filmId = filmId;
     }
 
-    public int getUser_id() {
-        return user_id;
+    public int getUserId() {
+        return userId;
     }
 
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     @Override
@@ -35,19 +37,19 @@ public class Like {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Like like = (Like) o;
-        return film_id == like.film_id && user_id == like.user_id;
+        return filmId == like.filmId && userId == like.userId;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(film_id, user_id);
+        return Objects.hash(filmId, userId);
     }
 
     @Override
     public String toString() {
         return "Like{" +
-                "film_id=" + film_id +
-                ", user_id=" + user_id +
+                "filmId=" + filmId +
+                ", userId=" + userId +
                 '}';
     }
 }
