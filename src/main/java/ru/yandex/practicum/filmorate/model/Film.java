@@ -6,7 +6,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
+import java.util.TreeSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,7 +26,7 @@ public class Film {
 
     private Set<Integer> likes = new HashSet<>();
 
-    private Set<Genre> genres = new HashSet<>();
+    private Set<Genre> genres = new TreeSet<>();
 
     private Mpa mpa;
 

@@ -13,9 +13,7 @@ import ru.yandex.practicum.filmorate.storage.GenresStorage;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -64,9 +62,11 @@ public class GenresDbStorage implements GenresStorage {
     @Override
     public Set<Genre> findGenresByFilmID(int filmId) {
         log.info("GenresDbStorage: получение множества жанров фильма с id: {}", filmId);
-        String sqlQuery = "SELECT * g.id, g.name FROM genres g JOIN filmGenres fg ON g.id = fg.genre_id WHERE fg.film_id =?";
-        return jdbcTemplate.query(sqlQuery, new GenreMapper()).stream().collect(Collectors.toSet());
+        String sqlQuery = "SELECT DISTINCT g.id, g.name FROM FILMGENRE fg JOIN GENRES g ON FG .genre_ID = g.id WHERE fg.film_id=?";
+        return new TreeSet<>(jdbcTemplate.query(sqlQuery, new GenreMapper(), filmId));
     }
+
+
 
     private final class GenreMapper implements RowMapper<Genre> {
 

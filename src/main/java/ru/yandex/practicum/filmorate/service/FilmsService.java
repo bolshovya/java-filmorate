@@ -21,6 +21,7 @@ public class FilmsService {
     private MpaStorage mpaStorage;
     private UsersStorage usersStorage;
 
+
     @Autowired
     public FilmsService(@Qualifier("filmsDbStorage") FilmsStorage filmsStorage, GenresStorage genresStorage,
                         MpaStorage mpaStorage, @Qualifier("usersDbStorage") UsersStorage usersStorage) {
@@ -32,8 +33,7 @@ public class FilmsService {
 
     public Film addFilm(Film addedFilm) {
         log.info("FilmsService: сохраненеи фильма: {}", addedFilm);
-        Film filmToReturn = filmsStorage.addFilm(addedFilm);
-        return filmToReturn;
+        return filmsStorage.addFilm(addedFilm);
     }
 
     public Film findById(int id) {

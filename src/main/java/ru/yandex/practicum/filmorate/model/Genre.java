@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import java.util.Objects;
 
-public class Genre {
+public class Genre implements Comparable<Genre> {
 
     public int id;
 
@@ -51,5 +51,10 @@ public class Genre {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public int compareTo(Genre g) {
+        return this.id - g.id;
     }
 }

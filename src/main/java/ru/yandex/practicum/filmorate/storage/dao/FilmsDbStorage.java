@@ -57,13 +57,33 @@ public class FilmsDbStorage implements FilmsStorage {
         int filmKey = keyHolder.getKey().intValue();
 
         addedFilm.setId(filmKey);
+        //log.info("Сохранен фильма с id: {}", filmKey);
 
-        String sqlQueryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES (?, ?)";
-        Set<Genre> filmGenres = addedFilm.getGenres();
-        for (Genre genre : filmGenres) {
-            jdbcTemplate.update(sqlQueryInsertGenre, addedFilm.getId(), genre.getId());
-        }
+        //insertGenres(addedFilm);
+
+
         return addedFilm;
+    }
+
+    private void insertGenres(Film film) {
+
+        if (!film.getGenres().isEmpty() || !(film.getGenres() ==null)) {
+            String sqlDeleteGenre = "DELETE FROM filmGenre WHERE film_id=?";
+            jdbcTemplate.update(sqlDeleteGenre, film.getId());
+            String sqlQueryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES (?, ?)";
+            Set<Genre> filmGenres = film.getGenres();
+            for (Genre genre : filmGenres) {
+                jdbcTemplate.update(sqlQueryInsertGenre, film.getId(), genre.getId());
+            }
+        }
+        if (film.getGenres().isEmpty() || (film.getGenres() ==null)) {
+            String sqlDeleteGenre = "DELETE FROM filmGenre WHERE film_id=?";
+            jdbcTemplate.update(sqlDeleteGenre, film.getId());
+        }
+    }
+
+    private Set<Genre> setGenres(Film film) {
+        return genresStorage.findGenresByFilmID(film.getId());
     }
 
     public Film validation(Film addedFilm) {
@@ -86,7 +106,10 @@ public class FilmsDbStorage implements FilmsStorage {
     @Override
     public Optional<Film> findById(int id) {
         log.info("FilmsDbStorage: получение фильма с id: {}", id);
-        return jdbcTemplate.query(SQL_QUERY_FILM_BY_ID, new FilmMapper(), id).stream().findAny();
+        // return jdbcTemplate.query(SQL_QUERY_FILM_BY_ID, new FilmMapper(), id).stream().findAny();
+        String sqlQuery = "SELECT f.id , f.name , f.description , f.releasedate , f.duration , f.mpa AS mpa_id , m.name  AS mpa_name\n" +
+                "FROM films f JOIN mpa m ON f.mpa = m.id WHERE f.id=?";
+        return jdbcTemplate.query(sqlQuery, new FilmMpaMapper(), id).stream().findAny();
     }
 
 
@@ -110,10 +133,16 @@ public class FilmsDbStorage implements FilmsStorage {
                 updatedFilm.getDuration(),
                 updatedFilm.getMpa().getId(),
                 updatedFilm.getId());
+
+        insertGenres(updatedFilm);
+
         if (valid == 0) {
             throw new UserNotFoundException();
         } else {
-            return jdbcTemplate.queryForObject(SQL_QUERY_FILM_BY_ID, new FilmMapper(), new Object[]{updatedFilm.getId()});
+            // return jdbcTemplate.queryForObject(SQL_QUERY_FILM_BY_ID, new FilmMapper(), new Object[]{updatedFilm.getId()});
+            Film film = findById(updatedFilm.getId()).get();
+            film.setGenres(genresStorage.findGenresByFilmID(updatedFilm.getId()));
+            return film;
         }
     }
 
@@ -169,5 +198,24 @@ public class FilmsDbStorage implements FilmsStorage {
     }
 
 
+    private final class FilmMpaMapper implements RowMapper<Film> {
+        @Override
+        public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
+            Film film = new Film();
+
+            film.setId(rs.getInt("id"));
+            film.setName(rs.getString("name"));
+            film.setDescription(rs.getString("description"));
+            film.setReleaseDate(rs.getDate("releaseDate").toLocalDate());
+            film.setDuration(rs.getInt("duration"));
+
+            Mpa mpa = new Mpa();
+            mpa.setId(rs.getInt("mpa_id"));
+            mpa.setName(rs.getString("mpa_name"));
+            film.setMpa(mpa);
+
+            return film;
+        }
+    }
 
 }
