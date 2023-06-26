@@ -38,12 +38,25 @@ public class FilmsService {
 
     public Film findById(int id) {
         log.info("FilmsService: получение фильма с id: {}", id);
-        return filmsStorage.findById(id).orElseThrow(() -> new FilmNotFoundException("Фильм с id: " + id + " не найден"));
+        //return filmsStorage.findById(id).orElseThrow(() -> new FilmNotFoundException("Фильм с id: " + id + " не найден"));
+
+        Film film = filmsStorage.findById(id).orElseThrow(() -> new FilmNotFoundException("Фильм с id: " + id + " не найден"));
+        film.setGenres(genresStorage.findGenresByFilmID(id));
+        return film;
     }
 
     public List<Film> getListOfAllFilms() {
         log.info("FilmsService: получение списка всех фильмов");
         return filmsStorage.getListOfAllFilms();
+        /*
+        List<Film> films = new ArrayList<>();
+        for (Film film : filmsStorage.getListOfAllFilms()) {
+            film.setGenres(genresStorage.findGenresByFilmID(film.getId()));
+            films.add(film);
+        }
+        return films;
+
+         */
     }
 
     public Film updateFilm(Film updatedFilm) {
