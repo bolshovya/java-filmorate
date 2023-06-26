@@ -26,7 +26,7 @@ public class FilmsDbStorage implements FilmsStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MpaStorage mpaStorage;
     private final GenresStorage genresStorage;
-    private final static String SQL_QUERY_FILM_BY_ID = "SELECT * FROM films WHERE id=?";
+    private final String SQL_QUERY_FILM_BY_ID = "SELECT * FROM films WHERE id=?";
 
     @Autowired
     public FilmsDbStorage(JdbcTemplate jdbcTemplate, MpaStorage mpaStorage, GenresStorage genresStorage) {
@@ -63,7 +63,7 @@ public class FilmsDbStorage implements FilmsStorage {
         String sqlDeleteGenre = "DELETE FROM filmGenre WHERE film_id=?";
         jdbcTemplate.update(sqlDeleteGenre, film.getId());
 
-        if (!film.getGenres().isEmpty() || !(film.getGenres() ==null)) {
+        if (!film.getGenres().isEmpty() || !(film.getGenres()==null)) {
             String sqlQueryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES (?, ?)";
             Set<Genre> filmGenres = film.getGenres();
             for (Genre genre : filmGenres) {
@@ -76,7 +76,7 @@ public class FilmsDbStorage implements FilmsStorage {
 
     private void insertLikes(Film film) {
         String sqlQuery = "SELECT * FROM likes WHERE film_id=?";
-        Set<Integer> likes = jdbcTemplate.query(sqlQuery, new LikeMapper(), film.getId()).stream().map(x -> x.getUser_id()).collect(Collectors.toSet());
+        Set<Integer> likes = jdbcTemplate.query(sqlQuery, new LikeMapper(), film.getId()).stream().map(x -> x.getUserId()).collect(Collectors.toSet());
         film.setLikes(likes);
 
     }
@@ -120,7 +120,7 @@ public class FilmsDbStorage implements FilmsStorage {
         List<Film> films = new ArrayList<>();
         for (Film film : jdbcTemplate.query(sqlQuery, new FilmMpaMapper())) {
             film.setGenres(genresStorage.findGenresByFilmID(film.getId()));
-            insertLikes(film);   ///////////////////
+            insertLikes(film);
             films.add(film);
         }
         return films;
@@ -229,8 +229,8 @@ public class FilmsDbStorage implements FilmsStorage {
         public Like mapRow(ResultSet rs, int rowNum) throws SQLException {
             Like like = new Like();
 
-            like.setFilm_id(rs.getInt("film_id"));
-            like.setUser_id(rs.getInt("user_id"));
+            like.setFilmId(rs.getInt("film_id"));
+            like.setUserId(rs.getInt("user_id"));
             return like;
         }
     }
