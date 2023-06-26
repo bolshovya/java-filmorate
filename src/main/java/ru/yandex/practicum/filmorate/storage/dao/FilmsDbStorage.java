@@ -62,7 +62,7 @@ public class FilmsDbStorage implements FilmsStorage {
         String sqlDeleteGenre = "DELETE FROM filmGenre WHERE film_id=?";
         jdbcTemplate.update(sqlDeleteGenre, film.getId());
 
-        if (!film.getGenres().isEmpty() || !(film.getGenres()==null)) {
+        if (!film.getGenres().isEmpty() || !(film.getGenres() == null)) {
             String sqlQueryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES (?, ?)";
             Set<Genre> filmGenres = film.getGenres();
             for (Genre genre : filmGenres) {
