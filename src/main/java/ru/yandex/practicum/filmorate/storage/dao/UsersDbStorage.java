@@ -26,7 +26,6 @@ import java.util.Optional;
 public class UsersDbStorage implements UsersStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final static String SQL_QUERY_USER_BY_ID = "SELECT * FROM users WHERE id=?";
 
     @Autowired
     public UsersDbStorage(JdbcTemplate jdbcTemplate) {
@@ -50,14 +49,14 @@ public class UsersDbStorage implements UsersStorage {
 
         int userKey = keyHolder.getKey().intValue();
 
-        return jdbcTemplate.queryForObject(SQL_QUERY_USER_BY_ID, new UserMapper(), new Object[]{userKey});
+        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new UserMapper(), new Object[]{userKey});
     }
 
     // read
     @Override
     public Optional<User> findById(int id) {
         log.info("UsersDbStorage: получение пользователя с id: {}", id);
-        return jdbcTemplate.query(SQL_QUERY_USER_BY_ID, new UserMapper(), id).stream().findAny();
+        return jdbcTemplate.query("SELECT * FROM users WHERE id=?", new UserMapper(), id).stream().findAny();
     }
 
 
@@ -97,7 +96,7 @@ public class UsersDbStorage implements UsersStorage {
         if (valid == 0) {
             throw new UserNotFoundException();
         } else {
-            return jdbcTemplate.queryForObject(SQL_QUERY_USER_BY_ID, new UserMapper(), updatedUser.getId());
+            return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new UserMapper(), updatedUser.getId());
         }
     }
 
@@ -106,7 +105,7 @@ public class UsersDbStorage implements UsersStorage {
     public User removeUserFromStorage(User removedUser) {
         jdbcTemplate.update("DELETE FROM users WHERE id=?", removedUser.getId());
 
-        return jdbcTemplate.queryForObject(SQL_QUERY_USER_BY_ID, new UserMapper(), removedUser.getId());
+        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new UserMapper(), removedUser.getId());
     }
 
     public List<User> getFriends(int id) {

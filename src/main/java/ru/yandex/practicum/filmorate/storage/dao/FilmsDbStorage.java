@@ -26,7 +26,6 @@ public class FilmsDbStorage implements FilmsStorage {
     private final JdbcTemplate jdbcTemplate;
     private final MpaStorage mpaStorage;
     private final GenresStorage genresStorage;
-    private final String SQL_QUERY_FILM_BY_ID = "SELECT * FROM films WHERE id=?";
 
     @Autowired
     public FilmsDbStorage(JdbcTemplate jdbcTemplate, MpaStorage mpaStorage, GenresStorage genresStorage) {
@@ -101,8 +100,6 @@ public class FilmsDbStorage implements FilmsStorage {
     @Override
     public Optional<Film> findById(int id) {
         log.info("FilmsDbStorage: получение фильма с id: {}", id);
-        // return jdbcTemplate.query(SQL_QUERY_FILM_BY_ID, new FilmMapper(), id).stream().findAny();
-
         String sqlQuery = "SELECT f.id , f.name , f.description , f.releasedate , f.duration , f.mpa AS mpa_id , m.name  AS mpa_name\n" +
                 "FROM films f JOIN mpa m ON f.mpa = m.id WHERE f.id=?";
         return jdbcTemplate.query(sqlQuery, new FilmMpaMapper(), id).stream().findAny();
@@ -113,8 +110,6 @@ public class FilmsDbStorage implements FilmsStorage {
     @Override
     public List<Film> getListOfAllFilms() {
         log.info("FilmsDbStorage: получение списка всех фильмов");
-        //String sqlQuery = "SELECT * FROM films";
-        //return jdbcTemplate.query(sqlQuery, new FilmMapper());
         String sqlQuery = "SELECT f.id , f.name , f.description , f.releasedate , f.duration , f.mpa AS mpa_id , m.name  AS mpa_name\n" +
                 "FROM films f JOIN mpa m ON f.mpa = m.id";
         List<Film> films = new ArrayList<>();
@@ -172,7 +167,7 @@ public class FilmsDbStorage implements FilmsStorage {
         String sqlQuery = "DELETE FROM films WHERE id=?";
         jdbcTemplate.update(sqlQuery, removedFilm.getId());
 
-        return jdbcTemplate.queryForObject(SQL_QUERY_FILM_BY_ID, new FilmMapper(), removedFilm.getId());
+        return jdbcTemplate.queryForObject("SELECT * FROM films WHERE id=?", new FilmMapper(), removedFilm.getId());
     }
 
     public int getSizeStorage() {

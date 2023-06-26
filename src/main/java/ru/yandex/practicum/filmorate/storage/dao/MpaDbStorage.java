@@ -17,7 +17,6 @@ import java.util.Optional;
 @Slf4j
 public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final String SQL_QUERY_MPA_BY_ID = "SELECT * FROM mpa WHERE id=?";
 
     @Autowired
     public MpaDbStorage(JdbcTemplate jdbcTemplate) {
@@ -28,7 +27,7 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public Optional<Mpa> findById(int id) {
         log.info("MpaDbStorage: получение рейтинга с id: {}", id);
-        return jdbcTemplate.query(SQL_QUERY_MPA_BY_ID, new MpaMapper(), id).stream().findAny();
+        return jdbcTemplate.query("SELECT * FROM mpa WHERE id=?", new MpaMapper(), id).stream().findAny();
     }
 
     @Override
