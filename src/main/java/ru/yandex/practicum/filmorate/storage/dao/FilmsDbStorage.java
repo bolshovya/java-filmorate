@@ -80,7 +80,7 @@ public class FilmsDbStorage implements FilmsStorage {
 
     }
 
-    public Film validation(Film addedFilm) {
+    private Film validation(Film addedFilm) {
         if (addedFilm.getName().isBlank()) {
             throw new ValidationFilmsException("Added film doesn't contains name.");
         }
@@ -102,8 +102,9 @@ public class FilmsDbStorage implements FilmsStorage {
         log.info("FilmsDbStorage: получение фильма с id: {}", id);
         String sqlQuery = "SELECT f.id , f.name , f.description , f.releasedate , f.duration , f.mpa AS mpa_id , m.name  AS mpa_name\n" +
                 "FROM films f JOIN mpa m ON f.mpa = m.id WHERE f.id=?";
-        return jdbcTemplate.query(sqlQuery, new FilmMpaMapper(), id).stream().findAny();
-
+        Optional<Film> film = jdbcTemplate.query(sqlQuery, new FilmMpaMapper(), id).stream().findAny();
+        film.ifPresent(this::insertLikes);
+        return film;
     }
 
 
@@ -151,8 +152,6 @@ public class FilmsDbStorage implements FilmsStorage {
         jdbcTemplate.update(sqlQuery, filmId, userId);
     }
 
-
-
     @Override
     public void removeLike(int filmId, int userId) {
         log.info("FilmsDbStorage: удаление ллайка фульма с id: {} от пользователя с id: {}", filmId, userId);
@@ -162,21 +161,11 @@ public class FilmsDbStorage implements FilmsStorage {
     }
 
     @Override
-    public Film removeFilmFromStorage(Film removedFilm) {
+    public void removeFilmFromStorage(Film removedFilm) {
         log.info("FilmsDbStorage: удаление фильма: {}", removedFilm);
         String sqlQuery = "DELETE FROM films WHERE id=?";
         jdbcTemplate.update(sqlQuery, removedFilm.getId());
-
-        return jdbcTemplate.queryForObject("SELECT * FROM films WHERE id=?", new FilmMapper(), removedFilm.getId());
     }
-
-    public int getSizeStorage() {
-        log.info("FilmsDbStorage: получение размера хранилища с фильмами");
-        String sqlQuery = "SELECT COUNT(id) FROM films";
-        return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
-    }
-
-
 
     private final class FilmMapper implements RowMapper<Film> {
         @Override
@@ -196,7 +185,6 @@ public class FilmsDbStorage implements FilmsStorage {
             return film;
         }
     }
-
 
     private final class FilmMpaMapper implements RowMapper<Film> {
         @Override

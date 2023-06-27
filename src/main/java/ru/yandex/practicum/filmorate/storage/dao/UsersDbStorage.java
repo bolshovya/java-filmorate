@@ -102,24 +102,8 @@ public class UsersDbStorage implements UsersStorage {
 
     // delete
     @Override
-    public User removeUserFromStorage(User removedUser) {
+    public void removeUserFromStorage(User removedUser) {
         jdbcTemplate.update("DELETE FROM users WHERE id=?", removedUser.getId());
-
-        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new UserMapper(), removedUser.getId());
-    }
-
-    public List<User> getFriends(int id) {
-        String sqlQuery = "SELECT * friendships WHERE user_id=?";
-
-        return jdbcTemplate.query(sqlQuery, new UserMapper());
-    }
-
-
-    @Override
-    public int getSizeStorage() {
-        String sqlQuery = "SELECT COUNT(id) FROM users";
-
-        return jdbcTemplate.queryForObject(sqlQuery, Integer.class);
     }
 
     @Override
@@ -137,8 +121,6 @@ public class UsersDbStorage implements UsersStorage {
         String sqlQuery = "DELETE FROM friendships WHERE user_id=? AND friend_id=?";
         jdbcTemplate.update(sqlQuery, userId, friendId);
     }
-
-
 
         private final class UserMapper implements RowMapper<User> {
         @Override

@@ -51,9 +51,8 @@ public class InMemoryUsersStorage implements UsersStorage {
         return updatedUser;
     }
 
-    public User removeUserFromStorage(User removedUser) {
+    public void removeUserFromStorage(User removedUser) {
         usersStorage.remove(removedUser.getId());
-        return removedUser;
     }
 
     public Optional<User> findById(int id) {

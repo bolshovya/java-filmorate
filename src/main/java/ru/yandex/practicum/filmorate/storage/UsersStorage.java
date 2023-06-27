@@ -16,9 +16,7 @@ public interface UsersStorage {
 
     User updateUser(User updatedUser);
 
-    User removeUserFromStorage(User removedUser);
-
-    int getSizeStorage();
+    void removeUserFromStorage(User removedUser);
 
     List<User> getFriendListById(int id);
 

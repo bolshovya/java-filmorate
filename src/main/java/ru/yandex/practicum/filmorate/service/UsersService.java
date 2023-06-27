@@ -40,10 +40,6 @@ public class UsersService {
         return usersStorage.updateUser(updatedUser);
     }
 
-    public int getSizeStorage() {
-        return usersStorage.getSizeStorage();
-    }
-
     public List<User> getFriendListById(int userId) {
         log.info("UsersService: получение списка друзей пользователя с id: {}", userId);
         return usersStorage.getFriendListById(userId);

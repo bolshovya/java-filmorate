@@ -53,11 +53,6 @@ public class FilmsService {
         return filmsStorage.updateFilm(updatedFilm);
     }
 
-    public int getSizeStorage() {
-        log.info("FilmsService: получение размера хранилища с фильмами");
-        return filmsStorage.getSizeStorage();
-    }
-
     public Genre findGenreById(int id) {
         log.info("FilmsService: получение жанра с id: {}", id);
         return genresStorage.findById(id).orElseThrow(() -> new GenreNotFoundException("Жанр с id: " + id + " не найден"));

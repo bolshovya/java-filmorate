@@ -53,9 +53,8 @@ public class InMemoryFilmsStorage implements FilmsStorage {
         return updatedFilm;
     }
 
-    public Film removeFilmFromStorage(Film removedFilm) {
+    public void removeFilmFromStorage(Film removedFilm) {
         filmsStorage.remove(removedFilm.getId());
-        return removedFilm;
     }
 
     public Optional<Film> findById(int id) {

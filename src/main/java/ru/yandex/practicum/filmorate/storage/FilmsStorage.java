@@ -15,9 +15,7 @@ public interface FilmsStorage {
 
     Film updateFilm(Film updatedFilm);
 
-    Film removeFilmFromStorage(Film removedFilm);
-
-    int getSizeStorage();
+    void removeFilmFromStorage(Film removedFilm);
 
     void addLike(int filmId, int userId);
 
