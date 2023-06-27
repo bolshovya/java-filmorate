@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,18 +15,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class GenresDbStorage implements GenresStorage {
 
     private final JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    public GenresDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
 
     @Override
     public Genre addGenre(Genre genre) {
@@ -60,10 +57,9 @@ public class GenresDbStorage implements GenresStorage {
     public Set<Genre> findGenresByFilmID(int filmId) {
         log.info("GenresDbStorage: получение множества жанров фильма с id: {}", filmId);
         String sqlQuery = "SELECT DISTINCT g.id, g.name FROM FILMGENRE fg JOIN GENRES g ON FG .genre_ID = g.id WHERE fg.film_id=?";
-        return new TreeSet<>(jdbcTemplate.query(sqlQuery, new GenreMapper(), filmId));
+        return jdbcTemplate.query(sqlQuery, new GenreMapper(), filmId).stream().sorted(Comparator.comparingInt(Genre::getId))
+                .collect(Collectors.toSet());
     }
-
-
 
     private final class GenreMapper implements RowMapper<Genre> {
 

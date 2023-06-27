@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,18 +22,12 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class FilmsDbStorage implements FilmsStorage {
 
     private final JdbcTemplate jdbcTemplate;
     private final MpaStorage mpaStorage;
     private final GenresStorage genresStorage;
-
-    @Autowired
-    public FilmsDbStorage(JdbcTemplate jdbcTemplate, MpaStorage mpaStorage, GenresStorage genresStorage) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.mpaStorage = mpaStorage;
-        this.genresStorage = genresStorage;
-    }
 
 
     // create
@@ -65,19 +60,19 @@ public class FilmsDbStorage implements FilmsStorage {
         if (!film.getGenres().isEmpty() || !(film.getGenres() == null)) {
             String sqlQueryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES (?, ?)";
             Set<Genre> filmGenres = film.getGenres();
-            for (Genre genre : filmGenres) {
-                jdbcTemplate.update(sqlQueryInsertGenre, film.getId(), genre.getId());
-            }
+            jdbcTemplate.batchUpdate(sqlQueryInsertGenre, filmGenres, 100, (PreparedStatement ps, Genre genre) -> {
+                ps.setInt(1, film.getId());
+                ps.setInt(2, genre.getId());
+            });
         }
         film.setGenres(genresStorage.findGenresByFilmID(film.getId()));
-
     }
 
     private void insertLikes(Film film) {
         String sqlQuery = "SELECT * FROM likes WHERE film_id=?";
-        Set<Integer> likes = jdbcTemplate.query(sqlQuery, new LikeMapper(), film.getId()).stream().map(x -> x.getUserId()).collect(Collectors.toSet());
+        Set<Integer> likes = jdbcTemplate.query(sqlQuery, new LikeMapper(), film.getId())
+                .stream().map(x -> x.getUserId()).collect(Collectors.toSet());
         film.setLikes(likes);
-
     }
 
     private Film validation(Film addedFilm) {
@@ -96,7 +91,6 @@ public class FilmsDbStorage implements FilmsStorage {
         return addedFilm;
     }
 
-
     @Override
     public Optional<Film> findById(int id) {
         log.info("FilmsDbStorage: получение фильма с id: {}", id);
@@ -106,7 +100,6 @@ public class FilmsDbStorage implements FilmsStorage {
         film.ifPresent(this::insertLikes);
         return film;
     }
-
 
     @Override
     public List<Film> getListOfAllFilms() {
@@ -122,7 +115,6 @@ public class FilmsDbStorage implements FilmsStorage {
         return films;
     }
 
-    // update
     @Override
     public Film updateFilm(Film updatedFilm) {
         log.info("FilmsDbStorage: обновление фильма: {}", updatedFilm);

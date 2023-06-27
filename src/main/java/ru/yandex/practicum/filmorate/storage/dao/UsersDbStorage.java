@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,16 +24,11 @@ import java.util.Optional;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class UsersDbStorage implements UsersStorage {
 
     private final JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public UsersDbStorage(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
-    }
-
-    // create
     @Override
     public User addUser(User user) {
         log.info("UsersDbStorage: сохранение пользователя: {}", user);
@@ -52,7 +48,6 @@ public class UsersDbStorage implements UsersStorage {
         return jdbcTemplate.queryForObject("SELECT * FROM users WHERE id=?", new UserMapper(), new Object[]{userKey});
     }
 
-    // read
     @Override
     public Optional<User> findById(int id) {
         log.info("UsersDbStorage: получение пользователя с id: {}", id);
@@ -81,7 +76,6 @@ public class UsersDbStorage implements UsersStorage {
         return jdbcTemplate.query(sqlQuery, new UserMapper());
     }
 
-    // update
     @Override
     public User updateUser(User updatedUser) {
         log.info("UsersDbStorage: обновление данных пользователя: {}", updatedUser);
@@ -100,7 +94,6 @@ public class UsersDbStorage implements UsersStorage {
         }
     }
 
-    // delete
     @Override
     public void removeUserFromStorage(User removedUser) {
         jdbcTemplate.update("DELETE FROM users WHERE id=?", removedUser.getId());
