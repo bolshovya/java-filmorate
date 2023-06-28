@@ -18,7 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -26,11 +25,7 @@ import java.util.stream.Collectors;
 public class FilmsDbStorage implements FilmsStorage {
 
     private final JdbcTemplate jdbcTemplate;
-    private final MpaStorage mpaStorage;
-    private final GenresStorage genresStorage;
 
-
-    // create
     @Override
     public Film addFilm(Film addedFilm) {
         log.info("FilmsDbStorage: сохранение фильма: {}", addedFilm);
@@ -49,30 +44,7 @@ public class FilmsDbStorage implements FilmsStorage {
 
         int filmKey = keyHolder.getKey().intValue();
         addedFilm.setId(filmKey);
-        insertGenres(addedFilm);
         return addedFilm;
-    }
-
-    private void insertGenres(Film film) {
-        String sqlDeleteGenre = "DELETE FROM filmGenre WHERE film_id=?";
-        jdbcTemplate.update(sqlDeleteGenre, film.getId());
-
-        if (!film.getGenres().isEmpty() || !(film.getGenres() == null)) {
-            String sqlQueryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES (?, ?)";
-            Set<Genre> filmGenres = film.getGenres();
-            jdbcTemplate.batchUpdate(sqlQueryInsertGenre, filmGenres, 100, (PreparedStatement ps, Genre genre) -> {
-                ps.setInt(1, film.getId());
-                ps.setInt(2, genre.getId());
-            });
-        }
-        film.setGenres(genresStorage.findGenresByFilmID(film.getId()));
-    }
-
-    private void insertLikes(Film film) {
-        String sqlQuery = "SELECT * FROM likes WHERE film_id=?";
-        Set<Integer> likes = jdbcTemplate.query(sqlQuery, new LikeMapper(), film.getId())
-                .stream().map(x -> x.getUserId()).collect(Collectors.toSet());
-        film.setLikes(likes);
     }
 
     private Film validation(Film addedFilm) {
@@ -94,25 +66,15 @@ public class FilmsDbStorage implements FilmsStorage {
     @Override
     public Optional<Film> findById(int id) {
         log.info("FilmsDbStorage: получение фильма с id: {}", id);
-        String sqlQuery = "SELECT f.id , f.name , f.description , f.releasedate , f.duration , f.mpa AS mpa_id , m.name  AS mpa_name\n" +
-                "FROM films f JOIN mpa m ON f.mpa = m.id WHERE f.id=?";
-        Optional<Film> film = jdbcTemplate.query(sqlQuery, new FilmMpaMapper(), id).stream().findAny();
-        film.ifPresent(this::insertLikes);
-        return film;
+        String sqlQuery = "SELECT * FROM films WHERE id=?";
+        return jdbcTemplate.query(sqlQuery, new FilmMapper(), id).stream().findAny();
     }
 
     @Override
     public List<Film> getListOfAllFilms() {
         log.info("FilmsDbStorage: получение списка всех фильмов");
-        String sqlQuery = "SELECT f.id , f.name , f.description , f.releasedate , f.duration , f.mpa AS mpa_id , m.name  AS mpa_name\n" +
-                "FROM films f JOIN mpa m ON f.mpa = m.id";
-        List<Film> films = new ArrayList<>();
-        for (Film film : jdbcTemplate.query(sqlQuery, new FilmMpaMapper())) {
-            film.setGenres(genresStorage.findGenresByFilmID(film.getId()));
-            insertLikes(film);
-            films.add(film);
-        }
-        return films;
+        String sqlQuery = "SELECT * FROM films";
+        return jdbcTemplate.query(sqlQuery, new FilmMapper());
     }
 
     @Override
@@ -128,28 +90,11 @@ public class FilmsDbStorage implements FilmsStorage {
                 updatedFilm.getMpa().getId(),
                 updatedFilm.getId());
 
-        insertGenres(updatedFilm);
-
         if (valid == 0) {
             throw new UserNotFoundException();
         } else {
             return updatedFilm;
         }
-    }
-
-    @Override
-    public void addLike(int filmId, int userId) { // добавление лайка
-        log.info("FilmsDbStorage: добавление лайка фильму с id: {} от пользователя с id: {}", filmId, userId);
-        String sqlQuery = "INSERT INTO likes (film_id, user_id) VALUES (?, ?)";
-        jdbcTemplate.update(sqlQuery, filmId, userId);
-    }
-
-    @Override
-    public void removeLike(int filmId, int userId) {
-        log.info("FilmsDbStorage: удаление ллайка фульма с id: {} от пользователя с id: {}", filmId, userId);
-
-        String sqlQuery = "DELETE FROM likes WHERE film_id=? AND user_id=?";
-        jdbcTemplate.update(sqlQuery, filmId, userId);
     }
 
     @Override

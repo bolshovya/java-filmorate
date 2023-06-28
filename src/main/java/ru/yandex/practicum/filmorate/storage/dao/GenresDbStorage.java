@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmGenre;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.GenresStorage;
 
@@ -41,6 +43,17 @@ public class GenresDbStorage implements GenresStorage {
     }
 
     @Override
+    public void addFilmGenre(Film film) {
+        log.info("GenresDbStorage: сохранение жанров для фильма: {}", film);
+        String sqlQuery = "INSERT INTO filmGenre (film_id, genre_id) VALUES (?, ?)";
+        Set<Genre> filmGenres = film.getGenres();
+        jdbcTemplate.batchUpdate(sqlQuery, filmGenres, 100, (PreparedStatement ps, Genre genre) -> {
+            ps.setInt(1, film.getId());
+            ps.setInt(2, genre.getId());
+        });
+    }
+
+    @Override
     public Optional<Genre> findById(int id) {
         log.info("GenresDbStorage: получение жанра с id: {}", id);
         return jdbcTemplate.query("SELECT * FROM genres WHERE id=?", new GenreMapper(), id).stream().findAny();
@@ -51,6 +64,23 @@ public class GenresDbStorage implements GenresStorage {
         log.info("GenresDbStorage: получение списка всех жанров");
         String sqlQuery = "SELECT * FROM genres";
         return jdbcTemplate.query(sqlQuery, new GenreMapper());
+    }
+
+    @Override
+    public void updateGenreForFilm(Film film) {
+        log.info("GenresDbStorage: обновление списка жанров для фильма: {}", film);
+        String sqlDeleteGenre = "DELETE FROM filmGenre WHERE film_id=?";
+        jdbcTemplate.update(sqlDeleteGenre, film.getId());
+
+        if (!film.getGenres().isEmpty() || !(film.getGenres() == null)) {
+            String sqlQueryInsertGenre = "INSERT INTO filmGenre (film_id, genre_id) VALUES (?, ?)";
+            Set<Genre> filmGenres = film.getGenres();
+            jdbcTemplate.batchUpdate(sqlQueryInsertGenre, filmGenres, 100, (PreparedStatement ps, Genre genre) -> {
+                ps.setInt(1, film.getId());
+                ps.setInt(2, genre.getId());
+            });
+        }
+        film.setGenres(findGenresByFilmID(film.getId()));
     }
 
     @Override
@@ -71,6 +101,17 @@ public class GenresDbStorage implements GenresStorage {
             genre.setName(rs.getString("name"));
 
             return genre;
+        }
+    }
+
+    private final class FilmGenreMapper implements RowMapper<FilmGenre> {
+
+        @Override
+        public FilmGenre mapRow(ResultSet rs, int rowNum) throws SQLException {
+            FilmGenre filmGenre = new FilmGenre();
+            filmGenre.setFilmId(rs.getInt("film_id"));
+            filmGenre.setGenreId(rs.getInt("genre_id"));
+            return filmGenre;
         }
     }
 }

@@ -58,21 +58,6 @@ class FilmsDbStorageTest {
     }
 
     @Test
-    void addLike() {
-        assertEquals(0, filmsDbStorage.findById(1).get().getLikes().size());
-        filmsDbStorage.addLike(1,1);
-        assertEquals(1, filmsDbStorage.findById(1).get().getLikes().size());
-    }
-
-    @Test
-    void removeLike() {
-        filmsDbStorage.addLike(1,1);
-        assertEquals(1, filmsDbStorage.findById(1).get().getLikes().size());
-        filmsDbStorage.removeLike(1,1);
-        assertEquals(0, filmsDbStorage.findById(1).get().getLikes().size());
-    }
-
-    @Test
     void removeFilmFromStorage() {
         Film film = filmsDbStorage.findById(2).get();
         filmsDbStorage.removeFilmFromStorage(film);

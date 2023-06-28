@@ -20,37 +20,52 @@ public class FilmsService {
     private GenresStorage genresStorage;
     private MpaStorage mpaStorage;
     private UsersStorage usersStorage;
+    private LikeStorage likeStorage;
 
 
     @Autowired
     public FilmsService(@Qualifier("filmsDbStorage") FilmsStorage filmsStorage, GenresStorage genresStorage,
-                        MpaStorage mpaStorage, @Qualifier("usersDbStorage") UsersStorage usersStorage) {
+                        MpaStorage mpaStorage, @Qualifier("usersDbStorage") UsersStorage usersStorage, LikeStorage likeStorage) {
         this.filmsStorage = filmsStorage;
         this.genresStorage = genresStorage;
         this.mpaStorage = mpaStorage;
         this.usersStorage = usersStorage;
+        this.likeStorage = likeStorage;
     }
+
 
     public Film addFilm(Film addedFilm) {
         log.info("FilmsService: сохраненеи фильма: {}", addedFilm);
-        return filmsStorage.addFilm(addedFilm);
+        filmsStorage.addFilm(addedFilm);
+        genresStorage.updateGenreForFilm(addedFilm);
+        return addedFilm;
     }
 
     public Film findById(int id) {
         log.info("FilmsService: получение фильма с id: {}", id);
         Film film = filmsStorage.findById(id).orElseThrow(() -> new FilmNotFoundException("Фильм с id: " + id + " не найден"));
+        film.setMpa(mpaStorage.findById(film.getMpa().getId()).get());
+        film.setLikes(likeStorage.findUserIdByFilmId(id));
         film.setGenres(genresStorage.findGenresByFilmID(id));
         return film;
     }
 
     public List<Film> getListOfAllFilms() {
         log.info("FilmsService: получение списка всех фильмов");
-        return filmsStorage.getListOfAllFilms();
+        List<Film> films = filmsStorage.getListOfAllFilms();
+        for (Film film : films) {
+            film.setMpa(mpaStorage.findById(film.getMpa().getId()).get());
+            film.setLikes(likeStorage.findUserIdByFilmId(film.getId()));
+            film.setGenres(genresStorage.findGenresByFilmID(film.getId()));
+        }
+        return films;
     }
 
     public Film updateFilm(Film updatedFilm) {
         log.info("FilmsService: обновление фильма: {}", updatedFilm);
-        return filmsStorage.updateFilm(updatedFilm);
+        filmsStorage.updateFilm(updatedFilm);
+        genresStorage.updateGenreForFilm(updatedFilm);
+        return updatedFilm;
     }
 
     public Genre findGenreById(int id) {
@@ -77,18 +92,18 @@ public class FilmsService {
         log.info("FilmsService: добавление лайка фильму с id {} от пользователя с id {}", filmId, userId);
         filmsStorage.findById(filmId).orElseThrow(() -> new FilmNotFoundException("Фильм с id: " + filmId + " не найден"));
         usersStorage.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId + " не найден"));
-        filmsStorage.addLike(filmId, userId);
+        likeStorage.addLike(filmId, userId);
     }
 
     public void removeLike(int filmId, int userId) {  // удаление лайка
         log.info("FilmsService: удаление лайка у фильма с id {} от пользователя с id {}", filmId, userId);
         filmsStorage.findById(filmId).orElseThrow(() -> new FilmNotFoundException("Фильм с id: " + filmId + " не найден"));
         usersStorage.findById(userId).orElseThrow(() -> new UserNotFoundException("Пользователь с id: " + userId + " не найден"));
-        filmsStorage.removeLike(filmId, userId);
+        likeStorage.removeLike(filmId, userId);
     }
 
     public Set<Film> findTopFilms(int count) {   // вывод 10 наиболее популярных фильмов по количеству лайков
-        return filmsStorage.getListOfAllFilms().stream()
+        return getListOfAllFilms().stream()
                 .sorted(Comparator.comparing(Film::getLikeCount).reversed())
                 .limit(count)
                 .collect(Collectors.toSet());
